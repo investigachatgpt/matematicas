@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Aprendamos a Restar!</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            text-align: center;
+            border: 3px solid #ffb6c1;
+        }
+        h1 {
+            color: #d63384;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        #game-container {
+            margin-top: 20px;
+        }
+        #objects-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            min-height: 120px;
+            align-items: center;
+        }
+        .apple {
+            font-size: 60px;
+            margin: 8px;
+            transition: all 0.5s ease-out;
+            cursor: pointer;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+        .apple:hover {
+            transform: scale(1.1);
+        }
+        .apple.removed {
+            opacity: 0;
+            transform: scale(0.5) rotate(360deg);
+        }
+        #problem, #question {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #495057;
+            font-weight: bold;
+        }
+        #problem {
+            color: #28a745;
+        }
+        #question {
+            color: #dc3545;
+        }
+        #answer {
+            font-size: 24px;
+            width: 120px;
+            height: 50px;
+            text-align: center;
+            border: 3px solid #ffc107;
+            border-radius: 10px;
+            font-weight: bold;
+            color: #495057;
+        }
+        #check-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 25px;
+            margin: 20px 10px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s;
+        }
+        #check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        #new-problem-btn {
+            background: linear-gradient(45deg, #17a2b8, #6f42c1);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 25px;
+            margin: 20px 10px;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+            transition: all 0.3s;
+        }
+        #new-problem-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            min-height: 40px;
+        }
+        .correct {
+            color: #28a745;
+            animation: bounce 0.6s ease-in-out;
+        }
+        .incorrect {
+            color: #dc3545;
+            animation: shake 0.6s ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            80% { transform: translateY(-5px); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .boton {
+            background: linear-gradient(45deg, #ffc107, #fd7e14);
+            color: #495057;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-top: 30px;
+            display: inline-block;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+        .boton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+        }
+        .equation {
+            font-size: 32px;
+            font-weight: bold;
+            color: #6f42c1;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍎 ¡Aprendamos a Restar! 🍎</h1>
+        <div id="game-container">
+            <div id="problem"></div>
+            <div id="objects-container"></div>
+            <div id="equation"></div>
+            <div id="question"></div>
+            <input type="number" id="answer" min="0" max="10" placeholder="?">
+            <br>
+            <button id="check-btn">✓ Comprobar</button>
+            <button id="new-problem-btn">🔄 Nuevo Problema</button>
+            <div id="result"></div>
+        </div>
+    </div>
+    <a href="operaciones.html" class="boton">← Volver a Operaciones</a>
+
+    <script>
+        let total, subtracted, correctAnswer;
+        let problemSolved = false;
+
+        function generateProblem() {
+            const container = document.getElementById('objects-container');
+            container.innerHTML = '';
+            total = Math.floor(Math.random() * 5) + 6; // 6 to 10 apples
+            subtracted = Math.floor(Math.random() * (total - 1)) + 1; // At least 1, but less than total
+            correctAnswer = total - subtracted;
+            problemSolved = false;
+
+            // Create apples with emoji
+            for (let i = 0; i < total; i++) {
+                const apple = document.createElement('div');
+                apple.className = 'apple';
+                apple.innerHTML = '🍎';
+                apple.title = 'Manzana';
+                container.appendChild(apple);
+            }
+
+            document.getElementById('problem').innerHTML = `🌳 Tenemos <strong>${total}</strong> manzanas en el árbol.`;
+            document.getElementById('equation').innerHTML = `${total} - ${subtracted} = ?`;
+            document.getElementById('question').innerHTML = `🗑️ Si quitamos <strong>${subtracted}</strong> manzanas, ¿cuántas quedan?`;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('result').className = '';
+
+            // Start animation after a brief delay
+            setTimeout(animateSubtraction, 1500);
+        }
+
+        function animateSubtraction() {
+            if (problemSolved) return;
+            
+            const apples = document.querySelectorAll('.apple');
+            for (let i = 0; i < subtracted; i++) {
+                setTimeout(() => {
+                    if (apples[i]) {
+                        apples[i].classList.add('removed');
+                    }
+                }, i * 300);
+            }
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const resultDiv = document.getElementById('result');
+            
+            if (isNaN(userAnswer)) {
+                resultDiv.textContent = '⚠️ Por favor ingresa un número.';
+                resultDiv.className = 'incorrect';
+                return;
+            }
+            
+            if (userAnswer === correctAnswer) {
+                resultDiv.innerHTML = '🎉 ¡Correcto! ¡Muy bien! 🎉<br>¡Eres un genio de las matemáticas!';
+                resultDiv.className = 'correct';
+                problemSolved = true;
+                
+                // Show the complete equation
+                document.getElementById('equation').innerHTML = `${total} - ${subtracted} = <strong style="color: #28a745;">${correctAnswer}</strong>`;
+                
+                // Generate new problem after delay
+                setTimeout(generateProblem, 3000);
+            } else {
+                resultDiv.innerHTML = '❌ Inténtalo de nuevo.<br>💡 Cuenta las manzanas que quedaron.';
+                resultDiv.className = 'incorrect';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('check-btn').addEventListener('click', checkAnswer);
+        document.getElementById('new-problem-btn').addEventListener('click', generateProblem);
+
+        // Allow pressing Enter to check answer
+        document.getElementById('answer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Initialize the game
+        generateProblem();
+    </script>
+</body>
+</html>

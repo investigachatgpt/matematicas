@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧮 Matemáticas Divertidas - Operaciones Mágicas 🎯</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating mathematical symbols */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-math {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float-math 8s ease-in-out infinite;
+            color: #fff;
+        }
+
+        .floating-math:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-math:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+        .floating-math:nth-child(3) { top: 60%; left: 5%; animation-delay: 2s; }
+        .floating-math:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 3s; }
+        .floating-math:nth-child(5) { bottom: 50%; left: 20%; animation-delay: 4s; }
+        .floating-math:nth-child(6) { top: 40%; right: 5%; animation-delay: 5s; }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2em;
+            position: relative;
+            z-index: 10;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border-radius: 20px;
+            padding: 1.5em 1.5em;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            margin-bottom: 1.5em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            border-radius: 22px;
+            z-index: -1;
+            animation: rainbow-border 3s linear infinite;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(2rem, 5vw, 3rem);
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 0.5em;
+        }
+
+        /* Central Mathematical Character - removed duplicate */
+
+        /* Menu Grid */
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5em;
+            margin: 2em 0;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            color: #2c3e50;
+            padding: 2.5em 2em;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 700;
+            transition: all 0.4s ease;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            border: 3px solid transparent;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            z-index: -1;
+            transform: scale(0);
+            border-radius: 25px;
+            transition: transform 0.4s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px) scale(1.05);
+            color: white;
+            border-color: #fff;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+
+        .menu-item:hover::before {
+            transform: scale(1);
+        }
+
+        .menu-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.8em;
+            transition: transform 0.4s ease;
+        }
+
+        .menu-item:hover .menu-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .menu-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            margin-bottom: 0.5em;
+            transition: color 0.4s ease;
+        }
+
+        .menu-description {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            opacity: 0.8;
+            line-height: 1.4;
+            transition: opacity 0.4s ease;
+        }
+
+        .menu-item:hover .menu-description {
+            opacity: 1;
+        }
+
+        /* Special effects for different operations */
+        .suma-item {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+        .suma-item::before {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .resta-item {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        }
+        .resta-item::before {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+        }
+
+        .numeros-item {
+            background: linear-gradient(135deg, #a8caba, #5d4e75);
+        }
+        .numeros-item::before {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .juegos-item {
+            background: linear-gradient(135deg, #ffd89b, #19547b);
+        }
+        .juegos-item::before {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+
+        /* Back button */
+        .boton {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #2c3e50;
+            padding: 1.2em 2.5em;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            display: inline-block;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+            margin-top: 2em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boton::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .boton:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.4);
+        }
+
+        .boton:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Animations */
+        @keyframes float-math {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            50% { transform: translateY(-30px) rotate(0deg); }
+            75% { transform: translateY(-15px) rotate(-5deg); }
+        }
+
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        @keyframes rainbow-border {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Sparkle effects */
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1em;
+            }
+            
+            .menu {
+                grid-template-columns: 1fr;
+                gap: 1.5em;
+            }
+            
+            .menu-item {
+                padding: 2em 1.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-item {
+                padding: 1.8em 1.2em;
+            }
+            
+            .math-character {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="bg-elements">
+        <div class="floating-math">➕</div>
+        <div class="floating-math">➖</div>
+        <div class="floating-math">✖️</div>
+        <div class="floating-math">➗</div>
+        <div class="floating-math">🔢</div>
+        <div class="floating-math">📊</div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>¡Operaciones Mágicas!</h1>
+            <p class="subtitle">✨ Descubre el mundo fantástico de los números y operaciones ✨</p>
+            
+            <!-- Mathematical Character in header -->
+            <div style="width: clamp(200px, 30vw, 280px); height: clamp(200px, 30vw, 280px); margin: 1em auto; position: relative; animation: gentle-bounce 3s ease-in-out infinite;">
+                <svg style="width: 100%; height: 100%; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background circle with gradient -->
+                    <defs>
+                        <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#667eea"/>
+                            <stop offset="100%" stop-color="#764ba2"/>
+                        </linearGradient>
+                        <linearGradient id="faceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffd700"/>
+                            <stop offset="100%" stop-color="#ffed4e"/>
+                        </linearGradient>
+                        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feDropShadow dx="0" dy="5" stdDeviation="3" flood-color="rgba(0,0,0,0.3)"/>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Body -->
+                    <circle cx="150" cy="180" r="100" fill="url(#bodyGrad)" filter="url(#shadow)"/>
+                    
+                    <!-- Head -->
+                    <circle cx="150" cy="120" r="80" fill="url(#faceGrad)" filter="url(#shadow)"/>
+                    
+                    <!-- Eyes -->
+                    <circle cx="125" cy="105" r="12" fill="white"/>
+                    <circle cx="175" cy="105" r="12" fill="white"/>
+                    <circle cx="125" cy="105" r="8" fill="black"/>
+                    <circle cx="175" cy="105" r="8" fill="black"/>
+                    <circle cx="127" cy="103" r="3" fill="white"/>
+                    <circle cx="177" cy="103" r="3" fill="white"/>
+                    
+                    <!-- Smile -->
+                    <path d="M 115 135 Q 150 165 185 135" fill="none" stroke="black" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <!-- Mathematical symbols floating around -->
+                    <text x="80" y="80" font-size="20" fill="#ff6b6b" font-family="Arial">➕</text>
+                    <text x="220" y="90" font-size="20" fill="#4ecdc4" font-family="Arial">➖</text>
+                    <text x="70" y="220" font-size="20" fill="#45b7d1" font-family="Arial">✖️</text>
+                    <text x="230" y="210" font-size="20" fill="#96ceb4" font-family="Arial">➗</text>
+                    <text x="50" y="150" font-size="18" fill="#feca57" font-family="Arial">🔢</text>
+                    <text x="250" y="150" font-size="18" fill="#ff9ff3" font-family="Arial">📊</text>
+                    
+                    <!-- Arms -->
+                    <ellipse cx="80" cy="160" rx="15" ry="40" fill="url(#faceGrad)" filter="url(#shadow)"/>
+                    <ellipse cx="220" cy="160" rx="15" ry="40" fill="url(#faceGrad)" filter="url(#shadow)"/>
+                    
+                    <!-- Hands with mathematical symbols -->
+                    <circle cx="75" cy="140" r="18" fill="url(#faceGrad)" filter="url(#shadow)"/>
+                    <circle cx="225" cy="140" r="18" fill="url(#faceGrad)" filter="url(#shadow)"/>
+                    <text x="70" y="148" font-size="16" fill="black" font-family="Arial">🧮</text>
+                    <text x="220" y="148" font-size="16" fill="black" font-family="Arial">📐</text>
+                    
+                    <!-- Sparkles -->
+                    <circle cx="100" cy="60" r="3" fill="#ffd700" opacity="0.8">
+                        <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="200" cy="70" r="2" fill="#ff6b6b" opacity="0.8">
+                        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.5s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="60" y="180" r="2" fill="#4ecdc4" opacity="0.8">
+                        <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.5s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+            </div>
+        </header>
+
+        <!-- Mathematical Character moved to header -->
+
+        <!-- Navigation Menu -->
+        <div class="menu">
+            <a href="numeros_page.html" class="menu-item numeros-item">
+                <span class="menu-icon">🔢</span>
+                <div class="menu-title">Números</div>
+                <div class="menu-description">Descubre el mundo de los números del 1 al 100</div>
+            </a>
+            
+            <a href="suma.html" class="menu-item suma-item">
+                <span class="menu-icon">➕</span>
+                <div class="menu-title">Suma</div>
+                <div class="menu-description">Aprende a sumar de forma divertida y visual</div>
+            </a>
+            
+            <a href="resta.html" class="menu-item resta-item">
+                <span class="menu-icon">➖</span>
+                <div class="menu-title">Resta</div>
+                <div class="menu-description">Domina la resta con juegos interactivos</div>
+            </a>
+            
+            <a href="juegos_page.html" class="menu-item juegos-item">
+                <span class="menu-icon">🎮</span>
+                <div class="menu-title">Juegos</div>
+                <div class="menu-description">Diviértete mientras practicas matemáticas</div>
+            </a>
+        </div>
+
+        <a href="index.html" class="boton">🏠 Volver al Inicio</a>
+    </div>
+
+    <script>
+        // Add sparkle effects when hovering menu items
+        function addSparkles(element) {
+            for (let i = 0; i < 6; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 2 + 's';
+                element.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 3000);
+            }
+        }
+
+        // Add sparkle effects to menu items on hover
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('mouseenter', () => addSparkles(item));
+        });
+
+        // Interactive character animation
+        const character = document.querySelector('[style*="gentle-bounce"]');
+        if (character) {
+            character.addEventListener('mouseenter', () => {
+                character.style.animation = 'gentle-bounce 0.6s ease-in-out';
+            });
+
+            character.addEventListener('animationend', () => {
+                character.style.animation = 'gentle-bounce 3s ease-in-out infinite';
+            });
+        }
+
+        // Parallax effect for floating math symbols
+        document.addEventListener('mousemove', (e) => {
+            const mathSymbols = document.querySelectorAll('.floating-math');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            mathSymbols.forEach((symbol, index) => {
+                const speed = (index + 1) * 0.3;
+                symbol.style.transform = `translate(${x * speed * 30}px, ${y * speed * 30}px) rotate(${x * speed * 15}deg)`;
+            });
+        });
+
+        // Add click animation to menu items
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Create ripple effect
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255,255,255,0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = (e.clientX - item.offsetLeft) + 'px';
+                ripple.style.top = (e.clientY - item.offsetTop) + 'px';
+                ripple.style.width = ripple.style.height = '20px';
+                ripple.style.marginLeft = ripple.style.marginTop = '-10px';
+                
+                item.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation style
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

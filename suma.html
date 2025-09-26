@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Aprendamos a Sumar!</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 25px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            border: 4px solid #ffd700;
+            max-width: 600px;
+            width: 90%;
+        }
+        h1 {
+            color: #4a148c;
+            font-size: 2.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        #game-container {
+            margin-top: 30px;
+        }
+        #visual-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .number-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #2196f3;
+            min-height: 150px;
+            justify-content: center;
+        }
+        .number-label {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .objects-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            max-width: 150px;
+        }
+        .math-object {
+            font-size: 35px;
+            animation: bounce-in 0.6s ease-out;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .math-object:hover {
+            transform: scale(1.2);
+        }
+        .operator {
+            font-size: 60px;
+            color: #ff5722;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+        .equals {
+            font-size: 60px;
+            color: #4caf50;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        #equation-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(90deg, #c8e6c9, #a5d6a7);
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #4caf50;
+        }
+        #answer {
+            font-size: 36px;
+            width: 120px;
+            height: 60px;
+            text-align: center;
+            border: 4px solid #ff9800;
+            border-radius: 15px;
+            font-weight: bold;
+            color: #e65100;
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            margin: 20px;
+        }
+        #answer:focus {
+            outline: none;
+            border-color: #ff5722;
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.5);
+        }
+        .btn-container {
+            margin: 20px 0;
+        }
+        #check-btn {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px;
+            margin: 10px;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s;
+        }
+        #check-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+        }
+        #new-problem-btn {
+            background: linear-gradient(45deg, #2196f3, #03a9f4);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px;
+            margin: 10px;
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+            transition: all 0.3s;
+        }
+        #new-problem-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.6);
+        }
+        #result {
+            margin-top: 25px;
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .correct {
+            color: #2e7d32;
+            animation: celebration 1s ease-in-out;
+        }
+        .incorrect {
+            color: #d32f2f;
+            animation: shake 0.6s ease-in-out;
+        }
+        @keyframes bounce-in {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        @keyframes celebration {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+        .boton {
+            background: linear-gradient(45deg, #ffc107, #ff9800);
+            color: #4a4a4a;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-top: 30px;
+            display: inline-block;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        }
+        .boton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.6);
+        }
+        .score-container {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #4caf50;
+        }
+        .score {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 ¡Aprendamos a Sumar! 🎯</h1>
+        
+        <div class="score-container">
+            <div class="score">🏆 Problemas resueltos: <span id="score">0</span></div>
+        </div>
+        
+        <div id="game-container">
+            <div id="visual-container">
+                <div class="number-group" id="group1">
+                    <div class="number-label" id="num1-label">5</div>
+                    <div class="objects-row" id="objects1"></div>
+                </div>
+                
+                <div class="operator">➕</div>
+                
+                <div class="number-group" id="group2">
+                    <div class="number-label" id="num2-label">3</div>
+                    <div class="objects-row" id="objects2"></div>
+                </div>
+                
+                <div class="equals">=</div>
+                
+                <div class="number-group" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); border-color: #ff9800;">
+                    <div class="number-label" style="color: #e65100;">❓</div>
+                    <input type="number" id="answer" placeholder="?" min="0" max="20">
+                </div>
+            </div>
+            
+            <div id="equation-display"></div>
+            
+            <div class="btn-container">
+                <button id="check-btn">✅ Comprobar</button>
+                <button id="new-problem-btn">🎲 Nuevo Problema</button>
+            </div>
+            
+            <div id="result"></div>
+        </div>
+    </div>
+    
+    <a href="operaciones.html" class="boton">🏠 Volver a Operaciones</a>
+
+    <script>
+        let num1, num2, correctAnswer;
+        let score = 0;
+        const emojis = ['🍎', '🍊', '🍌', '🍇', '🍓', '🥝', '🍒', '🥭', '🍑', '🫐'];
+        
+        function getRandomEmoji() {
+            return emojis[Math.floor(Math.random() * emojis.length)];
+        }
+        
+        function createVisualObjects(container, count, emoji) {
+            container.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const obj = document.createElement('div');
+                obj.className = 'math-object';
+                obj.textContent = emoji;
+                obj.style.animationDelay = `${i * 0.1}s`;
+                container.appendChild(obj);
+            }
+        }
+        
+        function generateProblem() {
+            num1 = Math.floor(Math.random() * 8) + 1; // 1-8
+            num2 = Math.floor(Math.random() * 8) + 1; // 1-8
+            correctAnswer = num1 + num2;
+            
+            const emoji1 = getRandomEmoji();
+            const emoji2 = getRandomEmoji();
+            
+            // Update visual representation
+            document.getElementById('num1-label').textContent = num1;
+            document.getElementById('num2-label').textContent = num2;
+            
+            createVisualObjects(document.getElementById('objects1'), num1, emoji1);
+            createVisualObjects(document.getElementById('objects2'), num2, emoji2);
+            
+            document.getElementById('equation-display').innerHTML = `${num1} ➕ ${num2} = ❓`;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('result').className = '';
+            
+            // Focus on answer input
+            setTimeout(() => {
+                document.getElementById('answer').focus();
+            }, 500);
+        }
+        
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const resultDiv = document.getElementById('result');
+            
+            if (isNaN(userAnswer)) {
+                resultDiv.innerHTML = '⚠️ Por favor ingresa un número';
+                resultDiv.className = 'incorrect';
+                return;
+            }
+            
+            if (userAnswer === correctAnswer) {
+                score++;
+                document.getElementById('score').textContent = score;
+                
+                const celebrations = [
+                    '🎉 ¡Perfecto! 🎉',
+                    '🌟 ¡Excelente! 🌟',
+                    '🚀 ¡Genial! 🚀',
+                    '🏆 ¡Muy bien! 🏆',
+                    '⭐ ¡Fantástico! ⭐'
+                ];
+                
+                const celebration = celebrations[Math.floor(Math.random() * celebrations.length)];
+                resultDiv.innerHTML = `${celebration}<br>¡Sigue así, campeón!`;
+                resultDiv.className = 'correct';
+                
+                // Update equation display
+                document.getElementById('equation-display').innerHTML = 
+                    `${num1} ➕ ${num2} = <span style="color: #2e7d32; font-size: 1.2em;">${correctAnswer}</span> ✅`;
+                
+                // Generate new problem after delay
+                setTimeout(generateProblem, 2500);
+            } else {
+                const hints = [
+                    '🤔 Cuenta todos los objetos juntos',
+                    '💡 Suma los números de las dos cajas',
+                    '🔍 Mira bien las figuras y cuenta',
+                    '📝 Inténtalo paso a paso'
+                ];
+                
+                const hint = hints[Math.floor(Math.random() * hints.length)];
+                resultDiv.innerHTML = `❌ Inténtalo de nuevo<br>${hint}`;
+                resultDiv.className = 'incorrect';
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('check-btn').addEventListener('click', checkAnswer);
+        document.getElementById('new-problem-btn').addEventListener('click', generateProblem);
+        
+        // Allow pressing Enter to check answer
+        document.getElementById('answer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+        
+        // Add click sound effect simulation
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+        
+        // Initialize the game
+        generateProblem();
+    </script>
+</body>
+</html>

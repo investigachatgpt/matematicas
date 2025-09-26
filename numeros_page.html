@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Aprendamos los Números!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Sniglet&display=swap');
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 30px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 900px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #764ba2;
+            font-family: 'Sniglet', cursive;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .game-modes {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .mode-card {
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 10px;
+            width: 250px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .mode-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        #game-area {
+            min-height: 400px;
+            margin: 20px 0;
+        }
+
+        /* Estilos para el juego de contar */
+        .counting-game {
+            display: none;
+        }
+
+        .objects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+
+        .counting-object {
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            animation: popIn 0.5s ease forwards;
+        }
+
+        .counting-object:hover {
+            transform: scale(1.1);
+        }
+
+        .counting-object.clicked {
+            animation: bounce 0.5s ease;
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+
+        /* Estilos para el juego de ordenar */
+        .ordering-game {
+            display: none;
+        }
+
+        .number-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .number-card {
+            background: #FFD700;
+            border: 3px solid #FFA500;
+            border-radius: 15px;
+            font-size: 2em;
+            font-weight: bold;
+            padding: 20px;
+            margin: 10px;
+            cursor: grab;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .number-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .number-card.correct {
+            background: #4CAF50;
+            border-color: #45a049;
+            animation: celebrate 0.5s ease;
+        }
+
+        /* Estilos para el juego de números faltantes */
+        .missing-game {
+            display: none;
+        }
+
+        .number-sequence {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .sequence-number {
+            background: #87CEEB;
+            border: 2px solid #4682B4;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .sequence-number.missing {
+            background: white;
+            border: 2px dashed #4682B4;
+        }
+
+        .number-options {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .option-btn {
+            background: #FF69B4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.5em;
+            padding: 15px 25px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background: #FF1493;
+            transform: translateY(-3px);
+        }
+
+        /* Controles generales */
+        .controls {
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-back {
+            background: linear-gradient(45deg, #FFA500, #FF8C00);
+        }
+
+        .btn-back:hover {
+            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.3);
+        }
+
+        #score-display {
+            font-size: 1.5em;
+            color: #4CAF50;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        #feedback {
+            font-size: 1.3em;
+            margin: 20px 0;
+            min-height: 30px;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #4CAF50;
+            animation: pulse 0.5s ease;
+        }
+
+        .error {
+            color: #f44336;
+            animation: shake 0.5s ease;
+        }
+
+        /* Animaciones */
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .mode-card {
+                width: 200px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <h1>🔢 ¡Aventura con los Números! 🎮</h1>
+        
+        <div class="game-modes" id="menu">
+            <div class="mode-card" onclick="startCountingGame()">
+                <h3>🧮 Contar Objetos</h3>
+                <p>Cuenta los objetos y aprende los números del 1 al 20</p>
+            </div>
+            <div class="mode-card" onclick="startOrderingGame()">
+                <h3>📊 Ordenar Números</h3>
+                <p>Ordena los números de menor a mayor</p>
+            </div>
+            <div class="mode-card" onclick="startMissingGame()">
+                <h3>🔍 Número Perdido</h3>
+                <p>Encuentra el número que falta en la secuencia</p>
+            </div>
+        </div>
+
+        <div id="game-area">
+            <!-- Juego de Contar -->
+            <div class="counting-game" id="countingGame">
+                <h2>¿Cuántos hay?</h2>
+                <div class="objects-grid" id="objectsGrid"></div>
+                <div id="countDisplay" style="font-size: 2em; margin: 20px 0;">
+                    Has contado: <span id="countNumber">0</span>
+                </div>
+                <div class="number-options" id="countOptions"></div>
+            </div>
+
+            <!-- Juego de Ordenar -->
+            <div class="ordering-game" id="orderingGame">
+                <h2>Ordena los números de menor a mayor</h2>
+                <div class="number-cards" id="numberCards"></div>
+            </div>
+
+            <!-- Juego de Número Faltante -->
+            <div class="missing-game" id="missingGame">
+                <h2>¿Qué número falta?</h2>
+                <div class="number-sequence" id="numberSequence"></div>
+                <div class="number-options" id="missingOptions"></div>
+            </div>
+        </div>
+
+        <div id="feedback"></div>
+        <div id="score-display">Puntos: <span id="score">0</span></div>
+        
+        <div class="controls">
+            <button class="btn" id="nextBtn" style="display: none;" onclick="nextRound()">Siguiente Reto</button>
+            <button class="btn btn-back" onclick="backToMenu()">Volver al Menú</button>
+        </div>
+    </div>
+
+    <a href="operaciones.html" class="btn btn-back" style="position: fixed; bottom: 20px; right: 20px;">
+        ← Volver a Operaciones
+    </a>
+
+    <script>
+        let score = 0;
+        let currentGame = '';
+        let correctAnswer = 0;
+        let countedObjects = 0;
+        let currentNumbers = [];
+
+        // Crear estrellas de fondo
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Juego de Contar
+        function startCountingGame() {
+            currentGame = 'counting';
+            hideAllGames();
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('countingGame').style.display = 'block';
+            generateCountingRound();
+        }
+
+        function generateCountingRound() {
+            const grid = document.getElementById('objectsGrid');
+            const optionsDiv = document.getElementById('countOptions');
+            grid.innerHTML = '';
+            optionsDiv.innerHTML = '';
+            countedObjects = 0;
+            document.getElementById('countNumber').textContent = '0';
+            
+            correctAnswer = Math.floor(Math.random() * 15) + 1;
+            const objects = ['🍎', '🍌', '🍊', '🍓', '🍇', '⚽', '🎈', '🌟', '🚗', '🐶'];
+            const selectedObject = objects[Math.floor(Math.random() * objects.length)];
+            
+            for (let i = 0; i < correctAnswer; i++) {
+                const obj = document.createElement('div');
+                obj.className = 'counting-object';
+                obj.textContent = selectedObject;
+                obj.style.fontSize = '40px';
+                obj.style.animationDelay = (i * 0.1) + 's';
+                obj.onclick = function() {
+                    if (!this.classList.contains('clicked')) {
+                        this.classList.add('clicked');
+                        countedObjects++;
+                        document.getElementById('countNumber').textContent = countedObjects;
+                    }
+                };
+                grid.appendChild(obj);
+            }
+            
+            // Crear opciones
+            const options = [correctAnswer];
+            while (options.length < 3) {
+                const num = Math.floor(Math.random() * 20) + 1;
+                if (!options.includes(num)) {
+                    options.push(num);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            options.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = num;
+                btn.onclick = () => checkCountingAnswer(num);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkCountingAnswer(answer) {
+            const feedback = document.getElementById('feedback');
+            if (answer === correctAnswer) {
+                feedback.className = 'success';
+                feedback.textContent = '¡Excelente! ¡Contaste correctamente!';
+                score += 10;
+                updateScore();
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            } else {
+                feedback.className = 'error';
+                feedback.textContent = `Intenta de nuevo. Cuenta con cuidado.`;
+            }
+        }
+
+        // Juego de Ordenar
+        function startOrderingGame() {
+            currentGame = 'ordering';
+            hideAllGames();
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('orderingGame').style.display = 'block';
+            generateOrderingRound();
+        }
+
+        function generateOrderingRound() {
+            const container = document.getElementById('numberCards');
+            container.innerHTML = '';
+            
+            const count = 5;
+            currentNumbers = [];
+            while (currentNumbers.length < count) {
+                const num = Math.floor(Math.random() * 20) + 1;
+                if (!currentNumbers.includes(num)) {
+                    currentNumbers.push(num);
+                }
+            }
+            
+            const shuffled = [...currentNumbers].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(num => {
+                const card = document.createElement('div');
+                card.className = 'number-card';
+                card.textContent = num;
+                card.draggable = true;
+                card.dataset.number = num;
+                
+                card.ondragstart = (e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('number', num);
+                    card.classList.add('dragging');
+                };
+                
+                card.ondragend = () => {
+                    card.classList.remove('dragging');
+                };
+                
+                card.ondragover = (e) => {
+                    e.preventDefault();
+                };
+                
+                card.ondrop = (e) => {
+                    e.preventDefault();
+                    const draggedNumber = e.dataTransfer.getData('number');
+                    const draggedElement = document.querySelector(`[data-number="${draggedNumber}"]`);
+                    const dropTarget = e.currentTarget;
+                    
+                    container.insertBefore(draggedElement, dropTarget);
+                    checkOrdering();
+                };
+                
+                container.appendChild(card);
+            });
+        }
+
+        function checkOrdering() {
+            const cards = document.querySelectorAll('.number-card');
+            const currentOrder = Array.from(cards).map(card => parseInt(card.dataset.number));
+            const correctOrder = [...currentNumbers].sort((a, b) => a - b);
+            
+            const isCorrect = currentOrder.every((num, index) => num === correctOrder[index]);
+            
+            if (isCorrect) {
+                cards.forEach(card => card.classList.add('correct'));
+                const feedback = document.getElementById('feedback');
+                feedback.className = 'success';
+                feedback.textContent = '¡Perfecto! Los números están en orden.';
+                score += 15;
+                updateScore();
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            }
+        }
+
+        // Juego de Número Faltante
+        function startMissingGame() {
+            currentGame = 'missing';
+            hideAllGames();
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('missingGame').style.display = 'block';
+            generateMissingRound();
+        }
+
+        function generateMissingRound() {
+            const sequenceDiv = document.getElementById('numberSequence');
+            const optionsDiv = document.getElementById('missingOptions');
+            sequenceDiv.innerHTML = '';
+            optionsDiv.innerHTML = '';
+            
+            const start = Math.floor(Math.random() * 10) + 1;
+            const length = 5;
+            const missingIndex = Math.floor(Math.random() * length);
+            
+            for (let i = 0; i < length; i++) {
+                const numDiv = document.createElement('div');
+                numDiv.className = 'sequence-number';
+                
+                if (i === missingIndex) {
+                    numDiv.classList.add('missing');
+                    numDiv.textContent = '?';
+                    correctAnswer = start + i;
+                } else {
+                    numDiv.textContent = start + i;
+                }
+                
+                sequenceDiv.appendChild(numDiv);
+            }
+            
+            // Crear opciones
+            const options = [correctAnswer];
+            while (options.length < 3) {
+                const num = start + Math.floor(Math.random() * 10);
+                if (!options.includes(num)) {
+                    options.push(num);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            options.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = num;
+                btn.onclick = () => checkMissingAnswer(num);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkMissingAnswer(answer) {
+            const feedback = document.getElementById('feedback');
+            if (answer === correctAnswer) {
+                feedback.className = 'success';
+                feedback.textContent = '¡Muy bien! Encontraste el número perdido.';
+                score += 12;
+                updateScore();
+                document.querySelector('.missing').textContent = correctAnswer;
+                document.querySelector('.missing').style.background = '#4CAF50';
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            } else {
+                feedback.className = 'error';
+                feedback.textContent = 'No es ese. Observa la secuencia con atención.';
+            }
+        }
+
+        // Funciones generales
+        function hideAllGames() {
+            document.getElementById('countingGame').style.display = 'none';
+            document.getElementById('orderingGame').style.display = 'none';
+            document.getElementById('missingGame').style.display = 'none';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function nextRound() {
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            switch(currentGame) {
+                case 'counting':
+                    generateCountingRound();
+                    break;
+                case 'ordering':
+                    generateOrderingRound();
+                    break;
+                case 'missing':
+                    generateMissingRound();
+                    break;
+            }
+        }
+
+        function backToMenu() {
+            hideAllGames();
+            document.getElementById('menu').style.display = 'flex';
+            document.getElementById('feedback').textContent = '';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        // Inicialización
+        createStars();
+    </script>
+</body>
+</html>

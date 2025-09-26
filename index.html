@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 ¡Bienvenido a Nuestra Aventura Matemática! 🚀</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating background elements */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-shape:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-shape:nth-child(2) { top: 20%; right: 10%; animation-delay: 1s; }
+        .floating-shape:nth-child(3) { bottom: 20%; left: 15%; animation-delay: 2s; }
+        .floating-shape:nth-child(4) { bottom: 30%; right: 20%; animation-delay: 3s; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            padding: 3em 2em;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2em;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 0.5em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 600;
+            opacity: 0.95;
+            margin-bottom: 1em;
+        }
+
+        .fun-strip-container {
+            margin: 3em 0;
+            padding: 2em 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fun-strip {
+            display: flex;
+            animation: scroll 15s linear infinite;
+            gap: 2em;
+        }
+
+        .math-emoji {
+            font-size: 4rem;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1em;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .math-emoji:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .math-emoji::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            border-radius: 25px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .math-emoji:hover::before {
+            opacity: 1;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2em;
+            margin: 3em 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border-radius: 25px;
+            padding: 2.5em;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 3px solid transparent;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            z-index: -1;
+            transform: scale(0);
+            border-radius: 25px;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+            color: white;
+        }
+
+        .card:hover::before {
+            transform: scale(1);
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 1em;
+            transition: transform 0.4s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            color: #2c3e50;
+            margin-bottom: 1em;
+            position: relative;
+            z-index: 2;
+            transition: color 0.4s ease;
+        }
+
+        .card:hover h2 {
+            color: white;
+        }
+
+        .card p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            line-height: 1.6;
+            margin-bottom: 2em;
+            color: #666;
+            position: relative;
+            z-index: 2;
+            transition: color 0.4s ease;
+        }
+
+        .card:hover p {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .boton {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 1.2em 2.5em;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 25px rgba(238, 90, 82, 0.4);
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .boton:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(238, 90, 82, 0.6);
+            background: linear-gradient(135deg, #ee5a52, #ff6b6b);
+        }
+
+        .card:hover .boton {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            color: #2c3e50;
+            box-shadow: 0 10px 25px rgba(255,255,255,0.3);
+        }
+
+        .card:hover .boton:hover {
+            background: linear-gradient(135deg, #f8f9fa, #fff);
+            transform: translateY(-5px);
+        }
+
+        footer {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 3em 2em;
+            border-radius: 30px 30px 0 0;
+            margin-top: 4em;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .authors {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5em;
+            border-radius: 15px;
+            margin-top: 1.5em;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+        }
+
+        .balloon-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .balloon {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 2em;
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            line-height: 1.3;
+            transition: all 0.5s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 5px solid rgba(255,255,255,0.3);
+        }
+
+        .number {
+            position: absolute;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: bold;
+            color: #ffd700;
+            opacity: 0;
+            transition: all 0.5s ease;
+            font-family: 'Fredoka One', cursive;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1em;
+            }
+            
+            main {
+                grid-template-columns: 1fr;
+                gap: 1.5em;
+            }
+            
+            .card {
+                padding: 2em;
+            }
+            
+            .fun-strip-container {
+                margin: 2em 0;
+            }
+            
+            .math-emoji {
+                font-size: 3rem;
+                min-width: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.5em;
+            }
+            
+            .math-emoji {
+                font-size: 2.5rem;
+                min-width: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background floating elements -->
+    <div class="bg-elements">
+        <div class="floating-shape">🔢</div>
+        <div class="floating-shape">📐</div>
+        <div class="floating-shape">🎯</div>
+        <div class="floating-shape">⭐</div>
+    </div>
+
+    <!-- Welcome balloon animation -->
+    <div id="balloon-container" class="balloon-container" style="display: none;">
+        <div id="balloon" class="balloon">
+            🎈 ¡Bienvenidos a aprender jugando! 🎈
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>🎯 ¡Aventura Matemática! 🚀</h1>
+                <p class="subtitle">✨ Donde los números cobran vida y las formas se vuelven divertidas ✨</p>
+            </div>
+        </header>
+
+        <!-- Fun math symbols strip -->
+        <div class="fun-strip-container">
+            <div class="fun-strip">
+                <div class="math-emoji">🔢</div>
+                <div class="math-emoji">➕</div>
+                <div class="math-emoji">➖</div>
+                <div class="math-emoji">✖️</div>
+                <div class="math-emoji">➗</div>
+                <div class="math-emoji">🔺</div>
+                <div class="math-emoji">🟢</div>
+                <div class="math-emoji">🟨</div>
+                <div class="math-emoji">⭐</div>
+                <div class="math-emoji">🎯</div>
+                <div class="math-emoji">🧮</div>
+                <div class="math-emoji">📊</div>
+                <!-- Duplicate for seamless loop -->
+                <div class="math-emoji">🔢</div>
+                <div class="math-emoji">➕</div>
+                <div class="math-emoji">➖</div>
+                <div class="math-emoji">✖️</div>
+                <div class="math-emoji">➗</div>
+                <div class="math-emoji">🔺</div>
+                <div class="math-emoji">🟢</div>
+                <div class="math-emoji">🟨</div>
+                <div class="math-emoji">⭐</div>
+                <div class="math-emoji">🎯</div>
+                <div class="math-emoji">🧮</div>
+                <div class="math-emoji">📊</div>
+            </div>
+        </div>
+
+        <main>
+            <div class="card">
+                <div class="card-icon">🧮</div>
+                <h2>Operaciones Matemáticas</h2>
+                <p>¡Descubre el mundo mágico de los números! Suma, resta y diviértete mientras aprendes. Cada problema es una nueva aventura esperándote.</p>
+                <a href="operaciones.html" class="boton">🚀 ¡Empezar Aventura!</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🔷</div>
+                <h2>Figuras Geométricas</h2>
+                <p>¡Explora las formas fantásticas que nos rodean! Triángulos, círculos, cuadrados y más te esperan en este emocionante viaje geométrico.</p>
+                <a href="geometria.html" class="boton">🎨 ¡Descubrir Formas!</a>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <p style="font-size: 1.2em; margin-bottom: 1em;">🎓 © 2025 Aventura Matemática Educativa 🎓</p>
+                <div class="authors">
+                    <strong>👨‍🎓 Creado ❤️ por:</strong><br>
+                    Luckas Gerau Aguas Quiñonez <br>
+                    <em>Grado 7°A - Innovando en Educación</em>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Balloon welcome animation
+        const balloon = document.getElementById('balloon');
+        const balloonContainer = document.getElementById('balloon-container');
+
+        function animateBalloon() {
+            let size = 80;
+            const maxSize = 400;
+            const growthRate = 3;
+            const growthInterval = 40;
+
+            function grow() {
+                if (size < maxSize) {
+                    size += growthRate;
+                    balloon.style.width = `${size}px`;
+                    balloon.style.height = `${size}px`;
+                    balloon.style.fontSize = `${Math.max(16, size / 15)}px`;
+                    setTimeout(grow, growthInterval);
+                } else {
+                    setTimeout(popBalloon, 1000);
+                }
+            }
+
+            grow();
+        }
+
+        function popBalloon() {
+            balloon.style.transform = 'scale(1.3)';
+            balloon.style.background = 'linear-gradient(135deg, #ffd700, #ffed4e)';
+            
+            setTimeout(() => {
+                balloon.style.opacity = '0';
+                balloon.style.transform = 'scale(2)';
+                createMathExplosion();
+                setTimeout(() => {
+                    balloonContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        balloonContainer.style.display = 'none';
+                    }, 500);
+                }, 1000);
+            }, 300);
+        }
+
+        function createMathExplosion() {
+            const symbols = ['🔢', '➕', '➖', '✖️', '➗', '🔺', '🟢', '🟨', '⭐', '🎯', '💫', '✨'];
+            
+            for (let i = 0; i < 30; i++) {
+                const symbol = document.createElement('div');
+                symbol.classList.add('number');
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = `${Math.random() * 100}%`;
+                symbol.style.top = `${Math.random() * 100}%`;
+                symbol.style.color = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ffd700'][Math.floor(Math.random() * 6)];
+                balloonContainer.appendChild(symbol);
+
+                setTimeout(() => {
+                    symbol.style.transform = `translate(${(Math.random() - 0.5) * 600}px, ${(Math.random() - 0.5) * 600}px) rotate(${Math.random() * 360}deg)`;
+                    symbol.style.opacity = '1';
+                }, Math.random() * 200);
+
+                setTimeout(() => {
+                    symbol.style.opacity = '0';
+                    symbol.style.transform += ' scale(0)';
+                }, 1200 + Math.random() * 500);
+            }
+        }
+
+        // Add sparkle effects to cards
+        function addSparkles() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    for (let i = 0; i < 5; i++) {
+                        const sparkle = document.createElement('div');
+                        sparkle.style.position = 'absolute';
+                        sparkle.style.width = '4px';
+                        sparkle.style.height = '4px';
+                        sparkle.style.background = '#ffd700';
+                        sparkle.style.borderRadius = '50%';
+                        sparkle.style.pointerEvents = 'none';
+                        sparkle.style.left = Math.random() * 100 + '%';
+                        sparkle.style.top = Math.random() * 100 + '%';
+                        sparkle.style.animation = 'float 2s ease-out forwards';
+                        sparkle.style.zIndex = '3';
+                        
+                        card.appendChild(sparkle);
+                        setTimeout(() => sparkle.remove(), 2000);
+                    }
+                });
+            });
+        }
+
+        // Initialize effects
+        window.addEventListener('load', () => {
+            addSparkles();
+            
+            // Show balloon animation on first visit
+            if (!localStorage.getItem('hasVisitedMath')) {
+                balloonContainer.style.display = 'flex';
+                setTimeout(animateBalloon, 500);
+                localStorage.setItem('hasVisitedMath', 'true');
+            }
+        });
+
+        // Add parallax effect to floating shapes
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.floating-shape');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 0.5;
+                shape.style.transform = `translate(${x * speed * 20}px, ${y * speed * 20}px) rotate(${x * speed * 10}deg)`;
+            });
+        });
+    </script>
+</body>
+</html>

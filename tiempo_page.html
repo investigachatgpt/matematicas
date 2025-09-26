@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende la Hora - Reloj Divertido</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Baloo 2', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .clock-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+        }
+
+        .analog-clock {
+            width: 300px;
+            height: 300px;
+            border: 15px solid #764ba2;
+            border-radius: 50%;
+            position: relative;
+            background: radial-gradient(circle, #fff 0%, #f0f0f0 100%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .clock-number {
+            position: absolute;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .clock-center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #764ba2;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .hour-hand {
+            position: absolute;
+            width: 8px;
+            height: 80px;
+            background: #764ba2;
+            border-radius: 4px;
+            top: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translate(-50%, -100%) rotate(0deg);
+            transition: transform 0.5s ease;
+        }
+
+        .minute-hand {
+            position: absolute;
+            width: 6px;
+            height: 110px;
+            background: #f5576c;
+            border-radius: 3px;
+            top: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translate(-50%, -100%) rotate(0deg);
+            transition: transform 0.5s ease;
+        }
+
+        .digital-clock {
+            font-size: 3em;
+            color: #764ba2;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .time-activities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .activity-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .activity-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .activity-title {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .activity-time {
+            font-size: 1.8em;
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .game-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .game-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .time-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .time-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(118, 75, 162, 0.3);
+        }
+
+        .time-btn.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .answer-btn {
+            background: white;
+            border: 3px solid #764ba2;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #764ba2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background: #764ba2;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .answer-btn.correct {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+            animation: pulse 0.5s ease;
+        }
+
+        .answer-btn.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .schedule-maker {
+            background: #f0f8ff;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .schedule-title {
+            text-align: center;
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .schedule-item {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .schedule-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .schedule-time {
+            font-size: 1.5em;
+            color: #764ba2;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .schedule-activity {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .feedback.success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: white;
+        }
+
+        .feedback.error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .score-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #764ba2;
+            z-index: 100;
+        }
+
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(25, 84, 123, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .analog-clock { width: 250px; height: 250px; }
+            .digital-clock { font-size: 2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="score-badge">
+        ⏰ Puntos: <span id="timeScore">0</span>
+    </div>
+
+    <div class="main-container">
+        <h1>🕐 El Reloj Mágico del Tiempo 🕰️</h1>
+
+        <div class="time-controls">
+            <button class="time-btn active" onclick="showSection('learn')">📚 Aprender</button>
+            <button class="time-btn" onclick="showSection('practice')">✏️ Practicar</button>
+            <button class="time-btn" onclick="showSection('schedule')">📅 Mi Horario</button>
+            <button class="time-btn" onclick="showSection('game')">🎮 Jugar</button>
+        </div>
+
+        <!-- Sección de Aprendizaje -->
+        <div id="learn" class="game-section active">
+            <div class="clock-container">
+                <div class="analog-clock" id="analogClock">
+                    <div class="clock-number" style="top: 10px; left: 50%; transform: translateX(-50%);">12</div>
+                    <div class="clock-number" style="top: 50%; right: 10px; transform: translateY(-50%);">3</div>
+                    <div class="clock-number" style="bottom: 10px; left: 50%; transform: translateX(-50%);">6</div>
+                    <div class="clock-number" style="top: 50%; left: 10px; transform: translateY(-50%);">9</div>
+                    
+                    <div class="hour-hand" id="hourHand"></div>
+                    <div class="minute-hand" id="minuteHand"></div>
+                    <div class="clock-center"></div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="digital-clock" id="digitalClock">12:00</div>
+            </div>
+
+            <div class="time-controls">
+                <button class="time-btn" onclick="setTime(9, 0)">🌅 Mañana (9:00)</button>
+                <button class="time-btn" onclick="setTime(12, 0)">☀️ Mediodía (12:00)</button>
+                <button class="time-btn" onclick="setTime(15, 30)">🌤️ Tarde (3:30)</button>
+                <button class="time-btn" onclick="setTime(19, 0)">🌆 Noche (7:00)</button>
+            </div>
+
+            <div class="time-activities">
+                <div class="activity-card" onclick="setTime(7, 0)">
+                    <div class="activity-icon">🌅</div>
+                    <div class="activity-title">Despertar</div>
+                    <div class="activity-time">7:00 AM</div>
+                </div>
+                <div class="activity-card" onclick="setTime(8, 0)">
+                    <div class="activity-icon">🥣</div>
+                    <div class="activity-title">Desayuno</div>
+                    <div class="activity-time">8:00 AM</div>
+                </div>
+                <div class="activity-card" onclick="setTime(12, 30)">
+                    <div class="activity-icon">🍽️</div>
+                    <div class="activity-title">Almuerzo</div>
+                    <div class="activity-time">12:30 PM</div>
+                </div>
+                <div class="activity-card" onclick="setTime(15, 0)">
+                    <div class="activity-icon">⚽</div>
+                    <div class="activity-title">Jugar</div>
+                    <div class="activity-time">3:00 PM</div>
+                </div>
+                <div class="activity-card" onclick="setTime(18, 0)">
+                    <div class="activity-icon">📚</div>
+                    <div class="activity-title">Tareas</div>
+                    <div class="activity-time">6:00 PM</div>
+                </div>
+                <div class="activity-card" onclick="setTime(20, 0)">
+                    <div class="activity-icon">🛏️</div>
+                    <div class="activity-title">Dormir</div>
+                    <div class="activity-time">8:00 PM</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Práctica -->
+        <div id="practice" class="game-section">
+            <div class="question-box">
+                <div class="question-text" id="questionText">
+                    ¿Qué hora muestra el reloj?
+                </div>
+                
+                <div class="clock-container">
+                    <div class="analog-clock" id="practiceClock">
+                        <div class="clock-number" style="top: 10px; left: 50%; transform: translateX(-50%);">12</div>
+                        <div class="clock-number" style="top: 50%; right: 10px; transform: translateY(-50%);">3</div>
+                        <div class="clock-number" style="bottom: 10px; left: 50%; transform: translateX(-50%);">6</div>
+                        <div class="clock-number" style="top: 50%; left: 10px; transform: translateY(-50%);">9</div>
+                        
+                        <div class="hour-hand" id="practiceHourHand"></div>
+                        <div class="minute-hand" id="practiceMinuteHand"></div>
+                        <div class="clock-center"></div>
+                    </div>
+                </div>
+
+                <div class="answer-options" id="answerOptions">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+
+                <div id="practiceFeedback" class="feedback"></div>
+
+                <button class="time-btn" onclick="generatePracticeQuestion()">
+                    Nueva Pregunta
+                </button>
+            </div>
+        </div>
+
+        <!-- Sección de Mi Horario -->
+        <div id="schedule" class="game-section">
+            <div class="schedule-maker">
+                <h2 class="schedule-title">📅 Mi Horario Escolar</h2>
+                
+                <div class="schedule-grid">
+                    <div class="schedule-item" onclick="highlightSchedule(this)">
+                        <div class="schedule-time">7:00 AM</div>
+                        <div class="schedule-activity">🚌 Ir al colegio</div>
+                    </div>
+                    <div class="schedule-item" onclick="highlightSchedule(this)">
+                        <div class="schedule-time">8:00 AM</div>
+                        <div class="schedule-activity">📖 Clase de Español</div>
+                    </div>
+                    <div class="schedule-item" onclick="highlightSchedule(this)">
+                        <div class="schedule-time">9:00 AM</div>
+                        <div class="schedule-activity">🔢 Matemáticas</div>
+                    </div>
+                    <div class="schedule-item" onclick="highlightSchedule(this)">
+                        <div class="schedule-time">10:00 AM</div>
+                        <div class="schedule-activity">🍎 Recreo</div>
+                    </div>
+                    <div class="schedule-item" onclick="highlightSchedule(this)">
+                        <div class="schedule-time">10:30 AM</div>
+                        <div class="schedule-activity">🌍 Ciencias</div>
+                    </div>
+                    <div class="schedule-item" onclick="highlightSchedule(this)">
+                        <div class="schedule-time">11:30 AM</div>
+                        <div class="schedule-activity">🎨 Arte</div>
+                    </div>
+                    <div class="schedule-item" onclick="highlightSchedule(this)">
+                        <div class="schedule-time">12:30 PM</div>
+                        <div class="schedule-activity">🍽️ Almuerzo</div>
+                    </div>
+                    <div class="schedule-item" onclick="highlightSchedule(this)">
+                        <div class="schedule-time">2:00 PM</div>
+                        <div class="schedule-activity">🏠 Ir a casa</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="time-btn" onclick="createCustomSchedule()">
+                        ✨ Crear Mi Propio Horario
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Juego -->
+        <div id="game" class="game-section">
+            <div class="question-box">
+                <h2 style="color: #764ba2; margin-bottom: 20px;">🎮 Carrera Contra el Tiempo</h2>
+                
+                <div id="gameQuestion" class="question-text">
+                    <!-- La pregunta se generará dinámicamente -->
+                </div>
+
+                <div id="gameContent">
+                    <!-- El contenido del juego se generará dinámicamente -->
+                </div>
+
+                <div id="gameFeedback" class="feedback"></div>
+
+                <div class="time-controls">
+                    <button class="time-btn" onclick="startTimeRace()">
+                        🏁 Comenzar Carrera
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-button">
+        ← Volver al Inicio
+    </a>
+
+    <script>
+        let timeScore = 0;
+        let currentTime = { hours: 12, minutes: 0 };
+        let practiceAnswer = '';
+        let gameLevel = 1;
+
+        // Función para mostrar secciones
+        function showSection(section) {
+            document.querySelectorAll('.game-section').forEach(s => {
+                s.classList.remove('active');
+            });
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(section).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (section === 'practice') {
+                generatePracticeQuestion();
+            } else if (section === 'game') {
+                startTimeRace();
+            }
+        }
+
+        // Establecer tiempo en el reloj
+        function setTime(hours, minutes) {
+            currentTime = { hours, minutes };
+            
+            // Calcular ángulos
+            const hourAngle = (hours % 12) * 30 + (minutes / 60) * 30;
+            const minuteAngle = minutes * 6;
+            
+            // Actualizar manecillas
+            document.getElementById('hourHand').style.transform = 
+                `translate(-50%, -100%) rotate(${hourAngle}deg)`;
+            document.getElementById('minuteHand').style.transform = 
+                `translate(-50%, -100%) rotate(${minuteAngle}deg)`;
+            
+            // Actualizar reloj digital
+            const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+            const period = hours >= 12 ? 'PM' : 'AM';
+            const displayMinutes = minutes.toString().padStart(2, '0');
+            document.getElementById('digitalClock').textContent = 
+                `${displayHours}:${displayMinutes} ${period}`;
+            
+            // Animación de celebración
+            const clock = document.getElementById('analogClock');
+            clock.style.animation = 'pulse 0.5s ease';
+            setTimeout(() => {
+                clock.style.animation = '';
+            }, 500);
+        }
+
+        // Generar pregunta de práctica
+        function generatePracticeQuestion() {
+            const hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            const minutes = [0, 15, 30, 45];
+            
+            const randomHour = hours[Math.floor(Math.random() * hours.length)];
+            const randomMinute = minutes[Math.floor(Math.random() * minutes.length)];
+            
+            practiceAnswer = `${randomHour}:${randomMinute.toString().padStart(2, '0')}`;
+            
+            // Establecer el reloj de práctica
+            const hourAngle = (randomHour % 12) * 30 + (randomMinute / 60) * 30;
+            const minuteAngle = randomMinute * 6;
+            
+            document.getElementById('practiceHourHand').style.transform = 
+                `translate(-50%, -100%) rotate(${hourAngle}deg)`;
+            document.getElementById('practiceMinuteHand').style.transform = 
+                `translate(-50%, -100%) rotate(${minuteAngle}deg)`;
+            
+            // Generar opciones de respuesta
+            const options = [practiceAnswer];
+            while (options.length < 4) {
+                const wrongHour = hours[Math.floor(Math.random() * hours.length)];
+                const wrongMinute = minutes[Math.floor(Math.random() * minutes.length)];
+                const wrongAnswer = `${wrongHour}:${wrongMinute.toString().padStart(2, '0')}`;
+                
+                if (!options.includes(wrongAnswer)) {
+                    options.push(wrongAnswer);
+                }
+            }
+            
+            // Mezclar opciones
+            options.sort(() => Math.random() - 0.5);
+            
+            // Mostrar opciones
+            const optionsContainer = document.getElementById('answerOptions');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = option;
+                btn.onclick = () => checkPracticeAnswer(option, btn);
+                optionsContainer.appendChild(btn);
+            });
+            
+            document.getElementById('practiceFeedback').className = 'feedback';
+        }
+
+        // Verificar respuesta de práctica
+        function checkPracticeAnswer(answer, button) {
+            const allButtons = document.querySelectorAll('.answer-btn');
+            allButtons.forEach(btn => btn.disabled = true);
+            
+            const feedback = document.getElementById('practiceFeedback');
+            
+            if (answer === practiceAnswer) {
+                button.classList.add('correct');
+                feedback.className = 'feedback success show';
+                feedback.textContent = '¡Excelente! ¡Sabes leer la hora! ⭐';
+                timeScore += 10;
+                updateScore();
+                
+                setTimeout(() => {
+                    generatePracticeQuestion();
+                }, 3000);
+            }
+        }
+
+        // Resaltar elemento del horario
+        function highlightSchedule(element) {
+            // Remover highlight de todos
+            document.querySelectorAll('.schedule-item').forEach(item => {
+                item.style.background = 'white';
+            });
+            
+            // Agregar highlight al seleccionado
+            element.style.background = 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)';
+            
+            // Extraer hora del horario
+            const timeText = element.querySelector('.schedule-time').textContent;
+            const [time, period] = timeText.split(' ');
+            const [hours, minutes] = time.split(':');
+            
+            let hour = parseInt(hours);
+            if (period === 'PM' && hour !== 12) hour += 12;
+            if (period === 'AM' && hour === 12) hour = 0;
+            
+            setTime(hour, parseInt(minutes) || 0);
+        }
+
+        // Crear horario personalizado
+        function createCustomSchedule() {
+            const activities = [
+                '📚 Estudiar', '🎮 Jugar', '🍕 Comer', '⚽ Deportes',
+                '🎨 Arte', '🎵 Música', '📺 TV', '🚶 Caminar'
+            ];
+            
+            const scheduleGrid = document.querySelector('.schedule-grid');
+            scheduleGrid.innerHTML = '';
+            
+            for (let hour = 7; hour <= 20; hour++) {
+                const item = document.createElement('div');
+                item.className = 'schedule-item';
+                item.onclick = function() { highlightSchedule(this); };
+                
+                const displayHour = hour > 12 ? hour - 12 : hour;
+                const period = hour >= 12 ? 'PM' : 'AM';
+                const activity = activities[Math.floor(Math.random() * activities.length)];
+                
+                item.innerHTML = `
+                    <div class="schedule-time">${displayHour}:00 ${period}</div>
+                    <div class="schedule-activity">${activity}</div>
+                `;
+                
+                scheduleGrid.appendChild(item);
+            }
+            
+            // Animación de creación
+            const items = scheduleGrid.querySelectorAll('.schedule-item');
+            items.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.3s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // Juego de Carrera contra el Tiempo
+        let raceTimer = null;
+        let raceTime = 30;
+        let correctAnswers = 0;
+
+        function startTimeRace() {
+            gameLevel = 1;
+            correctAnswers = 0;
+            raceTime = 30;
+            clearInterval(raceTimer);
+            
+            const gameContent = document.getElementById('gameContent');
+            const gameQuestion = document.getElementById('gameQuestion');
+            
+            gameQuestion.innerHTML = `
+                <div style="display: flex; justify-content: space-around; align-items: center;">
+                    <div>Nivel: <span style="color: #764ba2; font-weight: bold;">${gameLevel}</span></div>
+                    <div>Tiempo: <span id="raceTimer" style="color: #f5576c; font-weight: bold;">30</span>s</div>
+                    <div>Correctas: <span id="correctCount" style="color: #4CAF50; font-weight: bold;">0</span></div>
+                </div>
+            `;
+            
+            generateRaceQuestion();
+            startRaceTimer();
+        }
+
+        function startRaceTimer() {
+            raceTimer = setInterval(() => {
+                raceTime--;
+                document.getElementById('raceTimer').textContent = raceTime;
+                
+                if (raceTime <= 0) {
+                    endTimeRace();
+                }
+            }, 1000);
+        }
+
+        function generateRaceQuestion() {
+            const gameContent = document.getElementById('gameContent');
+            
+            // Generar tipo de pregunta aleatoria
+            const questionTypes = ['readClock', 'setClock', 'timeMath'];
+            const type = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+            
+            if (type === 'readClock') {
+                // Leer el reloj
+                const hours = Math.floor(Math.random() * 12) + 1;
+                const minutes = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+                
+                gameContent.innerHTML = `
+                    <h3 style="color: #764ba2;">¿Qué hora es?</h3>
+                    <div class="clock-container">
+                        <div class="analog-clock" style="width: 200px; height: 200px;">
+                            <div class="clock-number" style="top: 5px; left: 50%; transform: translateX(-50%); font-size: 1em;">12</div>
+                            <div class="clock-number" style="top: 50%; right: 5px; transform: translateY(-50%); font-size: 1em;">3</div>
+                            <div class="clock-number" style="bottom: 5px; left: 50%; transform: translateX(-50%); font-size: 1em;">6</div>
+                            <div class="clock-number" style="top: 50%; left: 5px; transform: translateY(-50%); font-size: 1em;">9</div>
+                            
+                            <div class="hour-hand" style="height: 50px; transform: translate(-50%, -100%) rotate(${hours * 30 + minutes * 0.5}deg);"></div>
+                            <div class="minute-hand" style="height: 70px; transform: translate(-50%, -100%) rotate(${minutes * 6}deg);"></div>
+                            <div class="clock-center"></div>
+                        </div>
+                    </div>
+                    <div class="answer-options">
+                        ${generateTimeOptions(hours, minutes)}
+                    </div>
+                `;
+            } else if (type === 'setClock') {
+                // Establecer el reloj
+                const targetHour = Math.floor(Math.random() * 12) + 1;
+                const targetMinute = [0, 30][Math.floor(Math.random() * 2)];
+                
+                gameContent.innerHTML = `
+                    <h3 style="color: #764ba2;">Muestra las ${targetHour}:${targetMinute.toString().padStart(2, '0')} en el reloj</h3>
+                    <div class="answer-options">
+                        ${generateClockOptions(targetHour, targetMinute)}
+                    </div>
+                `;
+            } else {
+                // Matemáticas con tiempo
+                const hour1 = Math.floor(Math.random() * 12) + 1;
+                const addHours = Math.floor(Math.random() * 3) + 1;
+                const result = (hour1 + addHours) % 12 || 12;
+                
+                gameContent.innerHTML = `
+                    <h3 style="color: #764ba2;">Si son las ${hour1}:00 y pasan ${addHours} hora${addHours > 1 ? 's' : ''}, ¿qué hora será?</h3>
+                    <div class="answer-options">
+                        ${generateMathOptions(result)}
+                    </div>
+                `;
+            }
+        }
+
+        function generateTimeOptions(correctHour, correctMinute) {
+            const correct = `${correctHour}:${correctMinute.toString().padStart(2, '0')}`;
+            const options = [correct];
+            
+            while (options.length < 3) {
+                const wrongHour = Math.floor(Math.random() * 12) + 1;
+                const wrongMinute = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+                const wrong = `${wrongHour}:${wrongMinute.toString().padStart(2, '0')}`;
+                
+                if (!options.includes(wrong)) {
+                    options.push(wrong);
+                }
+            }
+            
+            options.sort(() => Math.random() - 0.5);
+            
+            return options.map(opt => `
+                <button class="answer-btn" onclick="checkRaceAnswer('${opt}', '${correct}')">
+                    ${opt}
+                </button>
+            `).join('');
+        }
+
+        function generateClockOptions(targetHour, targetMinute) {
+            const correct = `${targetHour}-${targetMinute}`;
+            const options = [
+                { hour: targetHour, minute: targetMinute, id: correct },
+                { hour: (targetHour + 1) % 12 || 12, minute: targetMinute, id: `${(targetHour + 1) % 12 || 12}-${targetMinute}` },
+                { hour: targetHour, minute: targetMinute === 0 ? 30 : 0, id: `${targetHour}-${targetMinute === 0 ? 30 : 0}` }
+            ];
+            
+            options.sort(() => Math.random() - 0.5);
+            
+            return options.map(opt => `
+                <div class="answer-btn" onclick="checkRaceAnswer('${opt.id}', '${correct}')" style="padding: 10px;">
+                    <div class="analog-clock" style="width: 100px; height: 100px; border-width: 5px;">
+                        <div class="hour-hand" style="height: 30px; width: 4px; transform: translate(-50%, -100%) rotate(${opt.hour * 30 + opt.minute * 0.5}deg);"></div>
+                        <div class="minute-hand" style="height: 40px; width: 3px; transform: translate(-50%, -100%) rotate(${opt.minute * 6}deg);"></div>
+                        <div class="clock-center" style="width: 10px; height: 10px;"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function generateMathOptions(correct) {
+            const options = [correct];
+            
+            while (options.length < 3) {
+                const wrong = Math.floor(Math.random() * 12) + 1;
+                if (!options.includes(wrong)) {
+                    options.push(wrong);
+                }
+            }
+            
+            options.sort(() => Math.random() - 0.5);
+            
+            return options.map(opt => `
+                <button class="answer-btn" onclick="checkRaceAnswer(${opt}, ${correct})">
+                    ${opt}:00
+                </button>
+            `).join('');
+        }
+
+        function checkRaceAnswer(selected, correct) {
+            const feedback = document.getElementById('gameFeedback');
+            
+            if (selected == correct) {
+                correctAnswers++;
+                document.getElementById('correctCount').textContent = correctAnswers;
+                
+                feedback.className = 'feedback success show';
+                feedback.textContent = '¡Correcto! +5 puntos ⭐';
+                timeScore += 5;
+                updateScore();
+                
+                // Aumentar nivel cada 5 respuestas correctas
+                if (correctAnswers % 5 === 0) {
+                    gameLevel++;
+                    raceTime += 10; // Bonus de tiempo
+                    document.querySelector('#gameQuestion span').textContent = gameLevel;
+                }
+                
+                setTimeout(() => {
+                    feedback.className = 'feedback';
+                    generateRaceQuestion();
+                }, 1000);
+            } else {
+                feedback.className = 'feedback error show';
+                feedback.textContent = '¡Ups! Intenta de nuevo';
+                raceTime -= 3; // Penalización de tiempo
+                
+                setTimeout(() => {
+                    feedback.className = 'feedback';
+                }, 1000);
+            }
+        }
+
+        function endTimeRace() {
+            clearInterval(raceTimer);
+            
+            const gameContent = document.getElementById('gameContent');
+            const feedback = document.getElementById('gameFeedback');
+            
+            feedback.className = 'feedback success show';
+            feedback.innerHTML = `
+                <h2>¡Juego Terminado!</h2>
+                <p>Respuestas correctas: ${correctAnswers}</p>
+                <p>Nivel alcanzado: ${gameLevel}</p>
+                <p>Puntos ganados: ${correctAnswers * 5}</p>
+                <div style="font-size: 2em; margin-top: 10px;">
+                    ${correctAnswers >= 10 ? '🏆 ¡Excelente!' : correctAnswers >= 5 ? '⭐ ¡Muy bien!' : '👍 ¡Sigue practicando!'}
+                </div>
+            `;
+            
+            gameContent.innerHTML = '';
+            
+            // Celebración si lo hizo bien
+            if (correctAnswers >= 10) {
+                celebrate();
+            }
+        }
+
+        // Actualizar puntuación
+        function updateScore() {
+            document.getElementById('timeScore').textContent = timeScore;
+            
+            // Animación de puntos
+            const scoreBadge = document.querySelector('.score-badge');
+            scoreBadge.style.animation = 'pulse 0.5s ease';
+            setTimeout(() => {
+                scoreBadge.style.animation = '';
+            }, 500);
+        }
+
+        // Celebración
+        function celebrate() {
+            for (let i = 0; i < 30; i++) {
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#f5576c', '#f093fb', '#4facfe', '#43e97b', '#fa709a', '#fee140'];
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '-10px';
+            confetti.style.borderRadius = '50%';
+            confetti.style.zIndex = '1000';
+            document.body.appendChild(confetti);
+            
+            let position = -10;
+            let rotation = 0;
+            const gravity = 0.5;
+            let velocity = Math.random() * 3 + 2;
+            
+            const fall = setInterval(() => {
+                velocity += gravity;
+                position += velocity;
+                rotation += 5;
+                confetti.style.top = position + 'px';
+                confetti.style.transform = `rotate(${rotation}deg)`;
+                
+                if (position > window.innerHeight) {
+                    clearInterval(fall);
+                    confetti.remove();
+                }
+            }, 20);
+        }
+
+        // Inicializar al cargar
+        window.onload = () => {
+            setTime(12, 0);
+        };
+    </script>
+</body>
+</html>PracticeQuestion();
+                }, 2000);
+            } else {
+                button.classList.add('incorrect');
+                feedback.className = 'feedback error show';
+                feedback.textContent = `No es correcto. La hora correcta es ${practiceAnswer}`;
+                
+                // Mostrar la respuesta correcta
+                allButtons.forEach(btn => {
+                    if (btn.textContent === practiceAnswer) {
+                        btn.classList.add('correct');
+                    }
+                });
+                
+                setTimeout(() => {
+                    generate

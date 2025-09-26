@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔷 Geometría Genial - Juego Educativo de Matemáticas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4169E1, #1e3c72);
+            color: white;
+            text-align: center;
+            padding: 1.5em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            margin-bottom: 0.5em;
+        }
+        
+        .header-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1em;
+        }
+        
+        #game-container {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border-radius: 25px;
+            padding: clamp(1.5em, 4vw, 3em);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            border: 3px solid #ffd700;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #game-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            border-radius: 25px;
+            z-index: -1;
+            animation: rainbow-border 3s linear infinite;
+        }
+        
+        .question-container {
+            margin-bottom: 1.2em;
+        }
+        
+        .question-title {
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            color: #2c3e50;
+            margin-bottom: 1em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        #shape-display {
+            width: clamp(180px, 35vw, 250px);
+            height: clamp(180px, 35vw, 250px);
+            margin: 1em auto;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            box-shadow: 
+                inset 0 4px 8px rgba(0,0,0,0.1),
+                0 8px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #shape-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2) 0%, transparent 50%);
+        }
+        
+        .shape-svg {
+            width: 80%;
+            height: 80%;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            animation: shape-entrance 0.8s ease-out;
+        }
+        
+        #options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.8em;
+            margin: 1.2em 0;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .option-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.8em 1.2em;
+            text-align: center;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+        
+        .option-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+        }
+        
+        .option-btn:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .option-btn:active {
+            transform: translateY(-2px);
+        }
+        
+        #feedback {
+            font-size: clamp(1.1rem, 3vw, 1.6rem);
+            font-weight: bold;
+            min-height: 1.8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1em 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .feedback-correct {
+            color: #27ae60;
+            animation: celebration 0.8s ease-out;
+        }
+        
+        .feedback-incorrect {
+            color: #e74c3c;
+            animation: shake 0.6s ease-out;
+        }
+        
+        .stats-container {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 1.2em;
+            margin-top: 1.2em;
+            border: 2px solid #dee2e6;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1em;
+            text-align: center;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 0.8em;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: #6c757d;
+            margin-top: 0.5em;
+        }
+        
+        .boton2 {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #2c3e50;
+            padding: 0.8em 1.5em;
+            text-decoration: none;
+            border-radius: 25px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .boton2:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        .new-round-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 0.8em 1.5em;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 20px;
+            margin: 0.8em 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 12px rgba(238, 90, 82, 0.3);
+        }
+        
+        .new-round-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(238, 90, 82, 0.4);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes rainbow-border {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes shape-entrance {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+        }
+        
+        @keyframes celebration {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            #options {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            main {
+                padding: 0.5em;
+            }
+            
+            #game-container {
+                padding: 1.5em 1em;
+            }
+            
+            #options {
+                grid-template-columns: 1fr;
+                gap: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔷 Geometría Genial 🎯</h1>
+        <p class="header-subtitle">✨ Descubre las formas mágicas ✨</p>
+        <a href="index.html" class="boton2">🏠 Volver al inicio</a>
+    </header>
+    
+    <main>
+        <div id="game-container">
+            <div class="question-container">
+                <h2 class="question-title">🤔 ¿Qué forma es esta?</h2>
+            </div>
+            
+            <div id="shape-display">
+                <svg class="shape-svg" viewBox="0 0 200 200"></svg>
+            </div>
+            
+            <div id="options"></div>
+            
+            <div id="feedback"></div>
+            
+            <button class="new-round-btn" onclick="startNewRound()">🎲 Nueva Forma</button>
+            
+            <div class="stats-container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="score-value">0</span>
+                        <div class="stat-label">🏆 Aciertos</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-value">0</span>
+                        <div class="stat-label">🎯 Total</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="accuracy-value">0%</span>
+                        <div class="stat-label">📊 Precisión</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        const shapes = [
+            { 
+                name: 'Triángulo', 
+                emoji: '🔺',
+                draw: () => `<polygon points="100,30 170,170 30,170" fill="url(#triangleGrad)" stroke="#e74c3c" stroke-width="3"/>`,
+                description: 'Tiene 3 lados y 3 ángulos'
+            },
+            { 
+                name: 'Cuadrado', 
+                emoji: '🟩',
+                draw: () => `<rect x="50" y="50" width="100" height="100" rx="5" fill="url(#squareGrad)" stroke="#27ae60" stroke-width="3"/>`,
+                description: 'Tiene 4 lados iguales'
+            },
+            { 
+                name: 'Círculo', 
+                emoji: '🔵',
+                draw: () => `<circle cx="100" cy="100" r="75" fill="url(#circleGrad)" stroke="#3498db" stroke-width="3"/>`,
+                description: 'Es completamente redondo'
+            },
+            { 
+                name: 'Rectángulo', 
+                emoji: '🟨',
+                draw: () => `<rect x="40" y="70" width="120" height="60" rx="5" fill="url(#rectGrad)" stroke="#f39c12" stroke-width="3"/>`,
+                description: 'Tiene 4 lados, 2 largos y 2 cortos'
+            },
+            { 
+                name: 'Pentágono', 
+                emoji: '🔶',
+                draw: () => `<polygon points="100,30 160,70 140,140 60,140 40,70" fill="url(#pentGrad)" stroke="#9b59b6" stroke-width="3"/>`,
+                description: 'Tiene 5 lados'
+            },
+            {
+                name: 'Estrella',
+                emoji: '⭐',
+                draw: () => `<polygon points="100,20 110,60 150,60 120,85 130,125 100,105 70,125 80,85 50,60 90,60" fill="url(#starGrad)" stroke="#f1c40f" stroke-width="3"/>`,
+                description: 'Tiene puntas brillantes'
+            }
+        ];
+        
+        let currentShape;
+        let score = 0;
+        let totalQuestions = 0;
+        
+        function createGradients() {
+            const svg = document.querySelector('.shape-svg');
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            
+            const gradients = [
+                { id: 'triangleGrad', colors: ['#ff9a9e', '#fecfef'] },
+                { id: 'squareGrad', colors: ['#a8edea', '#fed6e3'] },
+                { id: 'circleGrad', colors: ['#667eea', '#764ba2'] },
+                { id: 'rectGrad', colors: ['#ffecd2', '#fcb69f'] },
+                { id: 'pentGrad', colors: ['#a8caba', '#5d4e75'] },
+                { id: 'starGrad', colors: ['#ffd89b', '#19547b'] }
+            ];
+            
+            gradients.forEach(grad => {
+                const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+                gradient.setAttribute('id', grad.id);
+                gradient.setAttribute('x1', '0%');
+                gradient.setAttribute('y1', '0%');
+                gradient.setAttribute('x2', '100%');
+                gradient.setAttribute('y2', '100%');
+                
+                const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                stop1.setAttribute('offset', '0%');
+                stop1.setAttribute('stop-color', grad.colors[0]);
+                
+                const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                stop2.setAttribute('offset', '100%');
+                stop2.setAttribute('stop-color', grad.colors[1]);
+                
+                gradient.appendChild(stop1);
+                gradient.appendChild(stop2);
+                defs.appendChild(gradient);
+            });
+            
+            svg.appendChild(defs);
+        }
+        
+        function displayRandomShape() {
+            const svg = document.querySelector('.shape-svg');
+            currentShape = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            // Clear previous content but keep gradients
+            const defs = svg.querySelector('defs');
+            svg.innerHTML = '';
+            if (defs) svg.appendChild(defs);
+            
+            // Add the shape
+            svg.innerHTML += currentShape.draw();
+            
+            // Add sparkle effect
+            addSparkles(svg);
+        }
+        
+        function addSparkles(svg) {
+            for (let i = 0; i < 5; i++) {
+                const sparkle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                sparkle.setAttribute('cx', Math.random() * 200);
+                sparkle.setAttribute('cy', Math.random() * 200);
+                sparkle.setAttribute('r', '2');
+                sparkle.setAttribute('fill', '#ffd700');
+                sparkle.setAttribute('opacity', '0.7');
+                
+                const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                animate.setAttribute('attributeName', 'opacity');
+                animate.setAttribute('values', '0.7;0;0.7');
+                animate.setAttribute('dur', `${1 + Math.random()}s`);
+                animate.setAttribute('repeatCount', 'indefinite');
+                
+                sparkle.appendChild(animate);
+                svg.appendChild(sparkle);
+            }
+        }
+        
+        function createOptions() {
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            // Create a mix of correct answer and random wrong answers
+            const options = [currentShape];
+            const otherShapes = shapes.filter(shape => shape.name !== currentShape.name);
+            
+            // Add 3-4 random other shapes
+            while (options.length < Math.min(5, shapes.length)) {
+                const randomShape = otherShapes[Math.floor(Math.random() * otherShapes.length)];
+                if (!options.includes(randomShape)) {
+                    options.push(randomShape);
+                }
+            }
+            
+            // Shuffle options
+            options.sort(() => 0.5 - Math.random());
+            
+            options.forEach(shape => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.innerHTML = shape.name;
+                button.onclick = () => checkAnswer(shape.name);
+                optionsContainer.appendChild(button);
+            });
+        }
+        
+        function checkAnswer(selectedShape) {
+            const feedback = document.getElementById('feedback');
+            totalQuestions++;
+            
+            if (selectedShape === currentShape.name) {
+                score++;
+                feedback.innerHTML = `🎉 ¡Correcto! Es un ${currentShape.name} 🎉<br><small>${currentShape.description}</small>`;
+                feedback.className = 'feedback-correct';
+                
+                // Add celebration particles
+                createCelebrationParticles();
+            } else {
+                feedback.innerHTML = `❌ Era un ${currentShape.name}<br><small>${currentShape.description}</small>`;
+                feedback.className = 'feedback-incorrect';
+            }
+            
+            updateStats();
+            
+            // Disable buttons temporarily
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+            });
+            
+            setTimeout(() => {
+                feedback.innerHTML = '';
+                feedback.className = '';
+                startNewRound();
+            }, 2500);
+        }
+        
+        function createCelebrationParticles() {
+            const container = document.getElementById('game-container');
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '10px';
+                particle.style.height = '10px';
+                particle.style.background = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'][i % 5];
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = 'float 2s ease-out forwards';
+                
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 2000);
+            }
+        }
+        
+        function updateStats() {
+            document.getElementById('score-value').textContent = score;
+            document.getElementById('total-value').textContent = totalQuestions;
+            
+            const accuracy = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
+            document.getElementById('accuracy-value').textContent = accuracy + '%';
+        }
+        
+        function startNewRound() {
+            createGradients();
+            displayRandomShape();
+            createOptions();
+        }
+        
+        // Initialize the game
+        window.addEventListener('load', () => {
+            startNewRound();
+        });
+    </script>
+</body>
+</html>

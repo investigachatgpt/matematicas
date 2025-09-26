@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juegos Matemáticos Divertidos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', cursive;
+            background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            max-width: 1000px;
+            width: 100%;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #5e72e4;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(118, 75, 162, 0.3);
+        }
+
+        .game-card:hover::before {
+            left: 100%;
+        }
+
+        .game-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .game-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .game-description {
+            font-size: 0.95em;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        /* Estilos específicos para cada juego */
+        .game-area {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .game-area.active {
+            display: block;
+        }
+
+        /* Memoria Matemática */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 500px;
+            margin: 30px auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .memory-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.matched {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            animation: matchPulse 0.6s ease;
+        }
+
+        @keyframes matchPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .card-back {
+            background: white;
+            color: #5e72e4;
+            transform: rotateY(180deg);
+            font-weight: bold;
+            border: 3px solid #5e72e4;
+        }
+
+        /* Carrera de Números - MEJORADA */
+        .race-track {
+            background: linear-gradient(to right, 
+                #90EE90 0%, #90EE90 48%, 
+                #FFD700 48%, #FFD700 52%, 
+                #90EE90 52%, #90EE90 100%);
+            height: 120px;
+            position: relative;
+            border-radius: 15px;
+            margin: 30px 0;
+            overflow: hidden;
+            border: 3px solid #4CAF50;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Línea de meta */
+        .race-track::before {
+            content: '';
+            position: absolute;
+            right: 5%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: repeating-linear-gradient(
+                to bottom,
+                #000 0px,
+                #000 10px,
+                #fff 10px,
+                #fff 20px
+            );
+            z-index: 1;
+        }
+
+        /* Línea central mejorada - ahora representa la línea divisoria de carriles */
+        .race-track::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: repeating-linear-gradient(
+                to right,
+                #FFD700 0px,
+                #FFD700 15px,
+                transparent 15px,
+                transparent 25px
+            );
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .racer {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3em;
+            transition: left 0.8s ease-out;
+            animation: run 0.6s infinite alternate;
+            z-index: 2;
+        }
+
+        /* Voltear el corredor del jugador para que apunte hacia la derecha */
+        #playerRacer {
+            top: 25%;
+            transform: translateY(-50%) scaleX(-1); /* Voltea horizontalmente */
+        }
+
+        /* El robot mantiene su orientación original */
+        #computerRacer {
+            top: 75%;
+        }
+
+        /* Animación de carrera mejorada - ajustada para el jugador volteado */
+        @keyframes run {
+            from { 
+                transform: translateY(-50%) scaleX(-1) scale(1);
+            }
+            to { 
+                transform: translateY(-52%) scaleX(-1) scale(1.05);
+            }
+        }
+
+        /* Animación específica para el robot (sin voltear) */
+        #computerRacer {
+            animation: runRobot 0.6s infinite alternate;
+        }
+
+        @keyframes runRobot {
+            from { 
+                transform: translateY(-50%) scale(1);
+            }
+            to { 
+                transform: translateY(-52%) scale(1.05);
+            }
+        }
+
+        /* Indicadores de carril */
+        .lane-label {
+            position: absolute;
+            left: 10px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #2c3e50;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .player-label {
+            top: 15%;
+        }
+
+        .computer-label {
+            bottom: 15%;
+        }
+
+        .race-question {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px solid #5e72e4;
+        }
+
+        .race-question h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .race-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .race-options .btn {
+            min-width: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 1.2em;
+            padding: 12px 20px;
+        }
+
+        .race-options .btn:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* Atrapa las Estrellas */
+        .stars-game-area {
+            position: relative;
+            height: 400px;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .falling-star {
+            position: absolute;
+            font-size: 2em;
+            cursor: pointer;
+            animation: fall linear;
+            user-select: none;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-50px) rotate(0deg);
+            }
+            to {
+                transform: translateY(450px) rotate(360deg);
+            }
+        }
+
+        .star-equation {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .basket {
+            position: absolute;
+            bottom: 10px;
+            font-size: 3em;
+            transition: left 0.1s ease;
+            cursor: pointer;
+        }
+
+        /* Puzzle de Números */
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 15px;
+        }
+
+        .puzzle-piece {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .puzzle-piece:hover {
+            transform: scale(1.05);
+        }
+
+        .puzzle-piece.empty {
+            background: transparent;
+            border: 2px dashed #ccc;
+        }
+
+        /* Controles generales */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .score-board {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #5e72e4;
+        }
+
+        .timer {
+            color: #f5576c;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3);
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin-top: 20px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .feedback-message {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: 600;
+            animation: slideInUp 0.5s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: white;
+        }
+
+        .feedback-error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #5e72e4;
+        }
+
+        .instructions h3 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #1976d2;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .race-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .race-track {
+                height: 100px;
+            }
+            
+            .racer {
+                font-size: 2.5em;
+            }
+        }
+
+        /* Animación de celebración */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f5576c;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Efectos especiales para la carrera */
+        .finish-line-effect {
+            animation: finishGlow 0.5s ease-in-out 3;
+        }
+
+        @keyframes finishGlow {
+            0%, 100% { box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 5px 25px rgba(255, 215, 0, 0.8); }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>🎮 Juegos Matemáticos Súper Divertidos 🎯</h1>
+        
+        <div id="menuGames" class="games-grid">
+            <div class="game-card" onclick="startMemoryGame()">
+                <div class="game-icon">🧠</div>
+                <div class="game-title">Memoria Matemática</div>
+                <div class="game-description">Encuentra los pares de números y operaciones</div>
+            </div>
+            
+            <div class="game-card" onclick="startRaceGame()">
+                <div class="game-icon">🏃‍♂️</div>
+                <div class="game-title">Carrera de Números</div>
+                <div class="game-description">Resuelve rápido y gana la carrera</div>
+            </div>
+            
+            <div class="game-card" onclick="startStarsGame()">
+                <div class="game-icon">⭐</div>
+                <div class="game-title">Atrapa las Estrellas</div>
+                <div class="game-description">Atrapa solo las respuestas correctas</div>
+            </div>
+            
+            <div class="game-card" onclick="startPuzzleGame()">
+                <div class="game-icon">🧩</div>
+                <div class="game-title">Puzzle Numérico</div>
+                <div class="game-description">Ordena los números del 1 al 8</div>
+            </div>
+        </div>
+
+        <!-- Juego de Memoria -->
+        <div id="memoryGame" class="game-area">
+            <div class="game-header">
+                <h2>Memoria Matemática</h2>
+                <div class="score-board">
+                    <div class="score-item">
+                        <span>🏆</span>
+                        <span id="memoryScore">0</span>
+                    </div>
+                    <div class="score-item timer">
+                        <span>⏱️</span>
+                        <span id="memoryMoves">0</span> movimientos
+                    </div>
+                </div>
+            </div>
+            <div class="instructions">
+                <h3>¿Cómo jugar?</h3>
+                <p>Encuentra los pares de cartas que tengan el mismo resultado. Por ejemplo: 2+2 y 4 son un par.</p>
+            </div>
+            <div class="memory-grid" id="memoryGrid"></div>
+            <div id="memoryFeedback"></div>
+            <button class="btn btn-back" onclick="backToGamesMenu()">Volver al Menú</button>
+        </div>
+
+        <!-- Juego de Carrera MEJORADO -->
+        <div id="raceGame" class="game-area">
+            <div class="game-header">
+                <h2>🏁 Carrera de Números</h2>
+                <div class="score-board">
+                    <div class="score-item">
+                        <span>🏆</span>
+                        <span id="raceScore">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>📍</span>
+                        Meta: <span id="raceProgress">0</span>/10
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h3>¿Cómo jugar?</h3>
+                <p>🏃 <strong>Tú</strong> (carril superior) vs 🤖 <strong>Robot</strong> (carril inferior). Responde correctamente para avanzar hacia la meta. ¡El primero en llegar gana!</p>
+            </div>
+            
+            <div class="race-track" id="raceTrack">
+                <div class="lane-label player-label">🏃 Jugador</div>
+                <div class="lane-label computer-label">🤖 Robot</div>
+                <div class="racer" id="playerRacer" style="left: 5%;">🏃</div>
+                <div class="racer" id="computerRacer" style="left: 5%;">🤖</div>
+            </div>
+            
+            <div class="race-question">
+                <h3 id="raceQuestion">¿Cuánto es 2 + 2?</h3>
+                <div class="race-options" id="raceOptions"></div>
+            </div>
+            <div id="raceFeedback"></div>
+            <button class="btn btn-back" onclick="backToGamesMenu()">Volver al Menú</button>
+        </div>
+
+        <!-- Juego de Estrellas -->
+        <div id="starsGame" class="game-area">
+            <div class="game-header">
+                <h2>Atrapa las Estrellas</h2>
+                <div class="score-board">
+                    <div class="score-item">
+                        <span>⭐</span>
+                        <span id="starsScore">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>❤️</span>
+                        <span id="starsLives">3</span>
+                    </div>
+                </div>
+            </div>
+            <div class="instructions">
+                <h3>¿Cómo jugar?</h3>
+                <p>Mueve la canasta con el mouse o tocando la pantalla. Atrapa solo las estrellas con la respuesta correcta a: <strong id="targetEquation">2 + 2 = ?</strong></p>
+            </div>
+            <div class="stars-game-area" id="starsGameArea">
+                <div class="basket" id="basket">🧺</div>
+            </div>
+            <div id="starsFeedback"></div>
+            <button class="btn btn-back" onclick="backToGamesMenu()">Volver al Menú</button>
+        </div>
+
+        <!-- Juego de Puzzle -->
+        <div id="puzzleGame" class="game-area">
+            <div class="game-header">
+                <h2>Puzzle Numérico</h2>
+                <div class="score-board">
+                    <div class="score-item">
+                        <span>🧩</span>
+                        Movimientos: <span id="puzzleMoves">0</span>
+                    </div>
+                    <div class="score-item timer">
+                        <span>⏱️</span>
+                        <span id="puzzleTime">00:00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="instructions">
+                <h3>¿Cómo jugar?</h3>
+                <p>Haz clic en los números para moverlos al espacio vacío. Ordena los números del 1 al 8.</p>
+            </div>
+            <div class="puzzle-grid" id="puzzleGrid"></div>
+            <div id="puzzleFeedback"></div>
+            <button class="btn btn-success" onclick="shufflePuzzle()">Mezclar de Nuevo</button>
+            <button class="btn btn-back" onclick="backToGamesMenu()">Volver al Menú</button>
+        </div>
+    </div>
+
+    <a href="operaciones.html" class="btn btn-back" style="position: fixed; bottom: 20px; right: 20px;">
+        ← Volver a Operaciones
+    </a>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        let memoryCards = [];
+        let flippedCards = [];
+        let memoryScore = 0;
+        let memoryMoves = 0;
+        let raceScore = 0;
+        let raceProgress = 0;
+        let starsScore = 0;
+        let starsLives = 3;
+        let puzzleMoves = 0;
+        let puzzleTime = 0;
+        let puzzleTimer = null;
+        let currentAnswer = 0;
+        let starsInterval = null;
+
+        // Funciones generales
+        function backToGamesMenu() {
+            document.querySelectorAll('.game-area').forEach(area => {
+                area.classList.remove('active');
+            });
+            document.getElementById('menuGames').style.display = 'grid';
+            clearInterval(starsInterval);
+            clearInterval(puzzleTimer);
+        }
+
+        function showGame(gameId) {
+            document.getElementById('menuGames').style.display = 'none';
+            document.querySelectorAll('.game-area').forEach(area => {
+                area.classList.remove('active');
+            });
+            document.getElementById(gameId).classList.add('active');
+        }
+
+        function celebrate() {
+            const celebration = document.getElementById('celebration');
+            celebration.innerHTML = '';
+            const colors = ['#f5576c', '#f093fb', '#4facfe', '#43e97b', '#fa709a', '#fee140'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                celebration.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                celebration.innerHTML = '';
+            }, 3000);
+        }
+
+        // Juego de Memoria
+        function startMemoryGame() {
+            showGame('memoryGame');
+            memoryScore = 0;
+            memoryMoves = 0;
+            updateMemoryScore();
+            generateMemoryCards();
+        }
+
+        function generateMemoryCards() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            memoryCards = [];
+            flippedCards = [];
+            
+            // Crear pares de cartas
+            const pairs = [
+                {value: 2, display: '2'},
+                {value: 2, display: '1+1'},
+                {value: 4, display: '4'},
+                {value: 4, display: '2+2'},
+                {value: 5, display: '5'},
+                {value: 5, display: '3+2'},
+                {value: 6, display: '6'},
+                {value: 6, display: '4+2'}
+            ];
+            
+            // Mezclar cartas
+            pairs.sort(() => Math.random() - 0.5);
+            
+            pairs.forEach((pair, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.value = pair.value;
+                card.dataset.index = index;
+                
+                const front = document.createElement('div');
+                front.className = 'card-front';
+                front.textContent = '?';
+                
+                const back = document.createElement('div');
+                back.className = 'card-back';
+                back.textContent = pair.display;
+                
+                card.appendChild(front);
+                card.appendChild(back);
+                
+                card.addEventListener('click', () => flipCard(card));
+                
+                grid.appendChild(card);
+                memoryCards.push(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) {
+                return;
+            }
+            
+            card.classList.add('flipped');
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                memoryMoves++;
+                updateMemoryScore();
+                checkMemoryMatch();
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = flippedCards;
+            const value1 = card1.dataset.value;
+            const value2 = card2.dataset.value;
+            
+            if (value1 === value2 && card1.dataset.index !== card2.dataset.index) {
+                setTimeout(() => {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    memoryScore += 10;
+                    updateMemoryScore();
+                    flippedCards = [];
+                    
+                    if (document.querySelectorAll('.memory-card.matched').length === memoryCards.length) {
+                        showMemoryComplete();
+                    }
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        function updateMemoryScore() {
+            document.getElementById('memoryScore').textContent = memoryScore;
+            document.getElementById('memoryMoves').textContent = memoryMoves;
+        }
+
+        function showMemoryComplete() {
+            const feedback = document.getElementById('memoryFeedback');
+            feedback.className = 'feedback-message feedback-success';
+            feedback.textContent = `¡Excelente! Completaste el juego en ${memoryMoves} movimientos. Puntuación: ${memoryScore}`;
+            celebrate();
+        }
+
+        // Juego de Carrera MEJORADO
+        function startRaceGame() {
+            showGame('raceGame');
+            raceScore = 0;
+            raceProgress = 0;
+            document.getElementById('playerRacer').style.left = '5%';
+            document.getElementById('computerRacer').style.left = '5%';
+            updateRaceScore();
+            generateRaceQuestion();
+        }
+
+        function generateRaceQuestion() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const operation = Math.random() > 0.5 ? '+' : '-';
+            
+            let question, answer;
+            if (operation === '+') {
+                question = `${num1} + ${num2}`;
+                answer = num1 + num2;
+            } else {
+                const bigger = Math.max(num1, num2);
+                const smaller = Math.min(num1, num2);
+                question = `${bigger} - ${smaller}`;
+                answer = bigger - smaller;
+            }
+            
+            currentAnswer = answer;
+            document.getElementById('raceQuestion').textContent = `¿Cuánto es ${question}?`;
+            
+            // Generar opciones
+            const options = [answer];
+            while (options.length < 3) {
+                const wrong = answer + Math.floor(Math.random() * 10) - 5;
+                if (wrong >= 0 && !options.includes(wrong)) {
+                    options.push(wrong);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            const optionsDiv = document.getElementById('raceOptions');
+            optionsDiv.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.textContent = opt;
+                btn.onclick = () => checkRaceAnswer(opt);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkRaceAnswer(answer) {
+            const playerRacer = document.getElementById('playerRacer');
+            const computerRacer = document.getElementById('computerRacer');
+            const raceTrack = document.getElementById('raceTrack');
+            
+            if (answer === currentAnswer) {
+                raceScore += 10;
+                raceProgress++;
+                const newPosition = Math.min(85, 5 + (raceProgress * 8));
+                playerRacer.style.left = newPosition + '%';
+                
+                const feedback = document.getElementById('raceFeedback');
+                feedback.className = 'feedback-message feedback-success';
+                feedback.textContent = '¡Correcto! ¡Sigue así!';
+                
+                // Efecto especial cuando llega a la meta
+                if (raceProgress >= 10) {
+                    raceTrack.classList.add('finish-line-effect');
+                    feedback.textContent = '¡GANASTE LA CARRERA! 🏆🎉';
+                    celebrate();
+                    setTimeout(() => {
+                        raceTrack.classList.remove('finish-line-effect');
+                        startRaceGame();
+                    }, 3000);
+                } else {
+                    setTimeout(() => {
+                        feedback.textContent = '';
+                        generateRaceQuestion();
+                    }, 1500);
+                }
+            } else {
+                const computerPosition = parseFloat(computerRacer.style.left) + 8;
+                computerRacer.style.left = Math.min(85, computerPosition) + '%';
+                
+                const feedback = document.getElementById('raceFeedback');
+                feedback.className = 'feedback-message feedback-error';
+                feedback.textContent = '¡Ups! El robot avanza. Intenta de nuevo.';
+                
+                if (computerPosition >= 85) {
+                    feedback.textContent = 'El robot ganó esta vez. ¡Intenta de nuevo! 🤖';
+                    setTimeout(() => startRaceGame(), 2000);
+                } else {
+                    setTimeout(() => {
+                        feedback.textContent = '';
+                        generateRaceQuestion();
+                    }, 1500);
+                }
+            }
+            
+            updateRaceScore();
+        }
+
+        function updateRaceScore() {
+            document.getElementById('raceScore').textContent = raceScore;
+            document.getElementById('raceProgress').textContent = raceProgress;
+        }
+
+        // Juego de Estrellas
+        function startStarsGame() {
+            showGame('starsGame');
+            starsScore = 0;
+            starsLives = 3;
+            updateStarsScore();
+            setupStarsGame();
+        }
+
+        function setupStarsGame() {
+            const gameArea = document.getElementById('starsGameArea');
+            const basket = document.getElementById('basket');
+            
+            // Generar ecuación objetivo
+            const num1 = Math.floor(Math.random() * 5) + 1;
+            const num2 = Math.floor(Math.random() * 5) + 1;
+            currentAnswer = num1 + num2;
+            document.getElementById('targetEquation').textContent = `${num1} + ${num2} = ?`;
+            
+            // Mover canasta con mouse/touch
+            gameArea.addEventListener('mousemove', (e) => {
+                const rect = gameArea.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                basket.style.left = Math.max(0, Math.min(x - 30, rect.width - 60)) + 'px';
+            });
+            
+            gameArea.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const rect = gameArea.getBoundingClientRect();
+                const x = e.touches[0].clientX - rect.left;
+                basket.style.left = Math.max(0, Math.min(x - 30, rect.width - 60)) + 'px';
+            });
+            
+            // Generar estrellas cayendo
+            clearInterval(starsInterval);
+            starsInterval = setInterval(() => {
+                if (starsLives > 0) {
+                    createFallingStar();
+                }
+            }, 2000);
+        }
+
+        function createFallingStar() {
+            const star = document.createElement('div');
+            star.className = 'falling-star';
+            star.style.left = Math.random() * 90 + 5 + '%';
+            star.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            
+            const equation = document.createElement('div');
+            equation.className = 'star-equation';
+            
+            // 50% probabilidad de respuesta correcta
+            const isCorrect = Math.random() > 0.5;
+            const value = isCorrect ? currentAnswer : currentAnswer + Math.floor(Math.random() * 5) - 2;
+            equation.textContent = value;
+            
+            star.innerHTML = '⭐';
+            star.appendChild(equation);
+            star.dataset.correct = isCorrect;
+            
+            star.addEventListener('click', () => catchStar(star));
+            
+            document.getElementById('starsGameArea').appendChild(star);
+            
+            // Verificar colisión con canasta
+            const checkCollision = setInterval(() => {
+                const basket = document.getElementById('basket');
+                const basketRect = basket.getBoundingClientRect();
+                const starRect = star.getBoundingClientRect();
+                
+                if (starRect.bottom >= basketRect.top &&
+                    starRect.left < basketRect.right &&
+                    starRect.right > basketRect.left) {
+                    catchStar(star);
+                    clearInterval(checkCollision);
+                }
+                
+                if (starRect.top > window.innerHeight) {
+                    star.remove();
+                    clearInterval(checkCollision);
+                }
+            }, 50);
+        }
+
+        function catchStar(star) {
+            const isCorrect = star.dataset.correct === 'true';
+            star.remove();
+            
+            const feedback = document.getElementById('starsFeedback');
+            if (isCorrect) {
+                starsScore += 5;
+                feedback.className = 'feedback-message feedback-success';
+                feedback.textContent = '¡Bien! +5 puntos';
+            } else {
+                starsLives--;
+                feedback.className = 'feedback-message feedback-error';
+                feedback.textContent = '¡Ups! Esa no era la respuesta correcta';
+                
+                if (starsLives <= 0) {
+                    clearInterval(starsInterval);
+                    feedback.textContent = `Juego terminado. Puntuación final: ${starsScore}`;
+                    celebrate();
+                    setTimeout(() => startStarsGame(), 3000);
+                }
+            }
+            
+            updateStarsScore();
+            setTimeout(() => {
+                feedback.textContent = '';
+            }, 1500);
+        }
+
+        function updateStarsScore() {
+            document.getElementById('starsScore').textContent = starsScore;
+            document.getElementById('starsLives').textContent = starsLives;
+        }
+
+        // Juego de Puzzle
+        function startPuzzleGame() {
+            showGame('puzzleGame');
+            puzzleMoves = 0;
+            puzzleTime = 0;
+            updatePuzzleScore();
+            initializePuzzle();
+            startPuzzleTimer();
+        }
+
+        let puzzleState = [];
+        let emptyIndex = 8;
+
+        function initializePuzzle() {
+            puzzleState = [1, 2, 3, 4, 5, 6, 7, 8, null];
+            shufflePuzzle();
+        }
+
+        function shufflePuzzle() {
+            // Mezclar de forma que sea resoluble
+            for (let i = 0; i < 100; i++) {
+                const possibleMoves = getPossibleMoves();
+                const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                swapPieces(randomMove, emptyIndex);
+            }
+            puzzleMoves = 0;
+            updatePuzzleScore();
+            renderPuzzle();
+        }
+
+        function getPossibleMoves() {
+            const moves = [];
+            const row = Math.floor(emptyIndex / 3);
+            const col = emptyIndex % 3;
+            
+            if (row > 0) moves.push(emptyIndex - 3); // arriba
+            if (row < 2) moves.push(emptyIndex + 3); // abajo
+            if (col > 0) moves.push(emptyIndex - 1); // izquierda
+            if (col < 2) moves.push(emptyIndex + 1); // derecha
+            
+            return moves;
+        }
+
+        function renderPuzzle() {
+            const grid = document.getElementById('puzzleGrid');
+            grid.innerHTML = '';
+            
+            puzzleState.forEach((num, index) => {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                
+                if (num === null) {
+                    piece.classList.add('empty');
+                    emptyIndex = index;
+                } else {
+                    piece.textContent = num;
+                    piece.onclick = () => movePiece(index);
+                }
+                
+                grid.appendChild(piece);
+            });
+        }
+
+        function movePiece(index) {
+            const possibleMoves = getPossibleMoves();
+            if (possibleMoves.includes(index)) {
+                swapPieces(index, emptyIndex);
+                puzzleMoves++;
+                updatePuzzleScore();
+                renderPuzzle();
+                checkPuzzleWin();
+            }
+        }
+
+        function swapPieces(index1, index2) {
+            const temp = puzzleState[index1];
+            puzzleState[index1] = puzzleState[index2];
+            puzzleState[index2] = temp;
+        }
+
+        function checkPuzzleWin() {
+            const isWin = puzzleState.slice(0, 8).every((num, index) => num === index + 1);
+            if (isWin) {
+                clearInterval(puzzleTimer);
+                const feedback = document.getElementById('puzzleFeedback');
+                feedback.className = 'feedback-message feedback-success';
+                feedback.textContent = `¡Felicidades! Resolviste el puzzle en ${puzzleMoves} movimientos y ${formatTime(puzzleTime)}`;
+                celebrate();
+            }
+        }
+
+        function startPuzzleTimer() {
+            clearInterval(puzzleTimer);
+            puzzleTimer = setInterval(() => {
+                puzzleTime++;
+                document.getElementById('puzzleTime').textContent = formatTime(puzzleTime);
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updatePuzzleScore() {
+            document.getElementById('puzzleMoves').textContent = puzzleMoves;
+        }
+    </script>
+</body>
+</html>
